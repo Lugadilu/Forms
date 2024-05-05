@@ -5,23 +5,20 @@ namespace FormAPI.Repositories
 {
     public interface IFormRepository
     {
-        //List<FormField> GetFormFields();
-        Task<IEnumerable<FormField>> GetAll();
+       
+        Task<IEnumerable<FormField>> GetAllFormFields();
 
         //void CreateFormField(FormField formField);
 
 
 
-        Task<FormField> Create(FormField formField);
+        Task<FormField> CreateFormField(FormField formField);
 
-        //List<FormPage> GetFormPages();
-        //void CreateFormPage(FormPage formPage);
+        Task<IEnumerable<FormRecord>> GetAllFormRecordsAsync();
 
-        //List<FormRecord> GetFormRecords();
-        //void CreateFormRecord(FormRecord formRecord);
+        Task<FormRecord> GetByIdAsync(int id);
+        Task<FormRecord> CreateFormRecordAsync(FormRecord formRecord);
 
-        //List<FormCreate> GetFormCreates();
-        //void CreateFormCreate(FormCreate formCreate);
     }
 }
 

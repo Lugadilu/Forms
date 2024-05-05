@@ -1,10 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using FormAPI.Context;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
 using FormAPI.Repositories;
+using FormAPI.Service;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
+using System.Reflection;
+using Microsoft.OpenApi.Models;
 
 namespace FormAPI
 {
@@ -23,11 +28,11 @@ namespace FormAPI
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
-
-            // Register repositories
+            // Add the FormRepository and FormService as scoped services
             services.AddScoped<IFormRepository, FormRepository>();
+            services.AddScoped<FormService>();
+            //services.AddSingleton<FormService>();
 
-            // Other service registrations can go here
             // Add Swagger configuration
             services.AddSwaggerGen(c =>
             {
@@ -39,8 +44,7 @@ namespace FormAPI
                 c.IncludeXmlComments(xmlPath);
 
                 // Include definitions for FormFields and FormRecords
-                c.SchemaFilter<SwaggerSchemaFilter>(); // Custom filter to include schema definitions
-
+                //c.SchemaFilter<SwaggerSchemaFilter>(); // Custom filter to include schema definitions
             });
 
             // Add MVC services
@@ -49,8 +53,27 @@ namespace FormAPI
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // Configure middleware
-            // ...
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API Name v1");
+                });
+            }
+
+            app.UseHttpsRedirection();
+            app.UseRouting();
+            //app.UseAuthentication();
+            app.UseAuthorization();
+
+            // Endpoint routing
+            app.UseEndpoints(endpoints =>
+            {
+                // Map controllers using attribute routing
+                endpoints.MapControllers();
+            });
         }
     }
 }

@@ -13,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+
 //Register ApplicationContext
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -36,9 +37,9 @@ app.UseAuthorization();
 app.MapControllers(); // Removed the misplaced parameters
 
 // Creating form fields
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Forms}/{action=Index}/{id?}");
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Forms}/{action=Index}/{id?}");
 
 
 app.Run();

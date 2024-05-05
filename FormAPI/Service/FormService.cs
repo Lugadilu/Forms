@@ -138,8 +138,9 @@ namespace FormAPI.Service
                     formRecord.Nationality = "";
                     break;
                 case "phoneNumber":
-                    formRecord.PhoneNumber = "";
+                    throw new ArgumentException("Phone number is required.");
                     break;
+
                 case "email":
                     formRecord.Email = "";
                     break;

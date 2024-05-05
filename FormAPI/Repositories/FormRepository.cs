@@ -19,52 +19,55 @@ namespace FormAPI.Repositories
         {
 
         }*/
-        public async Task<IEnumerable<FormField>> GetAll()
+        public async Task<IEnumerable<FormField>> GetAllFormFields()
         {
             using var connection = new NpgsqlConnection(_connectionString);
             await connection.OpenAsync();
 
             return await connection.QueryAsync<FormField>("SELECT * FROM FormFields");
         }
-        public async Task<FormField> Create(FormField formField)
+
+        public async Task<FormField> CreateFormField(FormField formField)
         {
             using var connection = new NpgsqlConnection(_connectionString);
             await connection.OpenAsync();
 
             const string query = @"
-                INSERT INTO FormFields (Name, Type, DefaultValue) 
-                VALUES (@Name, @Type, @DefaultValue) 
-                RETURNING *";
+        INSERT INTO FormFields (Name, Id, Required, Attributes, Kind, FieldType, Rules) 
+        VALUES (@Name, @Id, @Required, @Attributes, @Kind, @FieldType, @Rules) 
+        RETURNING *";
 
             return await connection.QueryFirstOrDefaultAsync<FormField>(query, formField);
+
+
         }
-        /* public void CreateFormField(FormField formField)
-         {
+        public async Task<IEnumerable<FormRecord>> GetAllFormRecordsAsync()
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            await connection.OpenAsync();
 
-         }*/
-        /* public List<FormPage> GetFormPages()
-         {
+            return await connection.QueryAsync<FormRecord>("SELECT * FROM FormRecords");
+        }
+        public async Task<FormRecord> GetByIdAsync(int id)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            await connection.OpenAsync();
 
-         }
-         public void CreateFormPage(FormPage formPage)
-         {
+            return await connection.QueryFirstOrDefaultAsync<FormRecord>("SELECT * FROM FormRecords WHERE Id = @Id", new { Id = id });
+        }
+        public async Task<FormRecord> CreateFormRecordAsync(FormRecord formRecord)
+        {
+            using var connection = new NpgsqlConnection(_connectionString);
+            await connection.OpenAsync();
 
-         }
-         public List<FormRecord> GetFormRecords()
-         {
+            const string query = @"
+                INSERT INTO FormRecords (FirstName, SecondName, LastName, Birthdate, Gender, LanguageCode, Nationality, PhoneNumber, Email, Arrival, Departure, Address, Zip, City, Country, Kind, FieldType, Attributes) 
+                VALUES (@FirstName, @SecondName, @LastName, @Birthdate, @Gender, @LanguageCode, @Nationality, @PhoneNumber, @Email, @Arrival, @Departure, @Address, @Zip, @City, @Country, @Kind, @FieldType, @Attributes) 
+                RETURNING *";
 
-         }
-         public void CreateFormRecord(FormRecord formRecord)
-         {
+            return await connection.QueryFirstOrDefaultAsync<FormRecord>(query, formRecord);
+        }
 
-         }
-         public List<FormCreate> GetFormCreates()
-         {
-
-         }
-         public void CreateFormCreate(FormCreate formCreate)
-         {
-
-         }*/
+       
     }
 }

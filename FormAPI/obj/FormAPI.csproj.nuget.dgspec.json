@@ -54,6 +54,10 @@
               "target": "Package",
               "version": "[2.1.35, )"
             },
+            "Microsoft.AspNetCore.Mvc.Testing": {
+              "target": "Package",
+              "version": "[8.0.4, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.3, )"
@@ -73,6 +77,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.3, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.70, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
