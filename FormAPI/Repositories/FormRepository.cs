@@ -24,7 +24,7 @@ namespace FormAPI.Repositories
             using var connection = new NpgsqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            return await connection.QueryAsync<FormField>("SELECT * FROM FormFields");
+            return await connection.QueryAsync<FormField>("SELECT * FROM formfields");
         }
 
         public async Task<FormField> CreateFormField(FormField formField)
@@ -33,7 +33,7 @@ namespace FormAPI.Repositories
             await connection.OpenAsync();
 
             const string query = @"
-        INSERT INTO FormFields (Name, Id, Required, Attributes, Kind, FieldType, Rules) 
+        INSERT INTO formfields (Name, Id, Required, Attributes, Kind, FieldType, Rules) 
         VALUES (@Name, @Id, @Required, @Attributes, @Kind, @FieldType, @Rules) 
         RETURNING *";
 
@@ -46,14 +46,15 @@ namespace FormAPI.Repositories
             using var connection = new NpgsqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            return await connection.QueryAsync<FormRecord>("SELECT * FROM FormRecords");
+            return await connection.QueryAsync<FormRecord>("SELECT * FROM formrecords");
         }
         public async Task<FormRecord> GetByIdAsync(int id)
         {
             using var connection = new NpgsqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            return await connection.QueryFirstOrDefaultAsync<FormRecord>("SELECT * FROM FormRecords WHERE Id = @Id", new { Id = id });
+            return await connection.QueryFirstOrDefaultAsync<FormRecord>(
+                "SELECT * FROM formrecords WHERE \"Id\" = @Id", new { Id = id });
         }
         public async Task<FormRecord> CreateFormRecordAsync(FormRecord formRecord)
         {
@@ -61,9 +62,14 @@ namespace FormAPI.Repositories
             await connection.OpenAsync();
 
             const string query = @"
-                INSERT INTO FormRecords (FirstName, SecondName, LastName, Birthdate, Gender, LanguageCode, Nationality, PhoneNumber, Email, Arrival, Departure, Address, Zip, City, Country, Kind, FieldType, Attributes) 
+                INSERT INTO formrecords (FirstName, SecondName, LastName, Birthdate, Gender, LanguageCode, Nationality, PhoneNumber, Email, Arrival, Departure, Address, Zip, City, Country, Kind, FieldType, Attributes) 
                 VALUES (@FirstName, @SecondName, @LastName, @Birthdate, @Gender, @LanguageCode, @Nationality, @PhoneNumber, @Email, @Arrival, @Departure, @Address, @Zip, @City, @Country, @Kind, @FieldType, @Attributes) 
                 RETURNING *";
+            // Wrap the formRecord object in the necessary field
+            var parameters = new
+            {
+                formRecord = formRecord
+            };
 
             return await connection.QueryFirstOrDefaultAsync<FormRecord>(query, formRecord);
         }

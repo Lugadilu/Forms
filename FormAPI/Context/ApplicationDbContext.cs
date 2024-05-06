@@ -15,7 +15,7 @@ namespace FormAPI.Context
         {
             //can addd connection string but i choose to add it in appsettings.json
         }
-
+        //making the tables to lowercases solves some error
         public DbSet<FormField>formfields { get; set; }
         public DbSet<FormRecord> formrecords { get; set; }
 
