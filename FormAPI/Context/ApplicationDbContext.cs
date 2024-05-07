@@ -21,8 +21,13 @@ namespace FormAPI.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //using Fluent API to specify the column names in your DbContext
+            
+            //modelBuilder.Entity<FormRecord>()
+                        //.Property(f => f.FirstName)
+                        //.HasColumnName("FirstName");
 
-
+            
             //base.OnModelCreating(modelBuilder);
 
             //seed data
@@ -106,7 +111,7 @@ namespace FormAPI.Context
                     LastName = "Smith",
                     Birthdate = new DateTime(1990, 1, 1),
                     Gender = "Male",
-                    PhoneNumber = 1234567890,
+                    PhoneNumber = "0714665512",
                     Email = "john@example.com",
                     Address = "123 Main St",
                     Zip = "12345",
@@ -131,7 +136,7 @@ namespace FormAPI.Context
                     LastName = "Doe",
                     Birthdate = new DateTime(1995, 1, 1),
                     Gender = "Female",
-                    PhoneNumber = 0776543210,
+                    PhoneNumber = "0714665512",
                     Email = "jane@example.com",
                     Address = "123 Main St",
                     Zip = "12345",

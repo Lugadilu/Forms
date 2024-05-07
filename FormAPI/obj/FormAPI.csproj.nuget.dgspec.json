@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI\\FormAPI\\FormAPI.csproj": {}
+    "C:\\Users\\MC\\Desktop\\C# Training\\FormApi\\FormAPI\\FormAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI\\FormAPI\\FormAPI.csproj": {
+    "C:\\Users\\MC\\Desktop\\C# Training\\FormApi\\FormAPI\\FormAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI\\FormAPI\\FormAPI.csproj",
+        "projectUniqueName": "C:\\Users\\MC\\Desktop\\C# Training\\FormApi\\FormAPI\\FormAPI.csproj",
         "projectName": "FormAPI",
-        "projectPath": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI\\FormAPI\\FormAPI.csproj",
+        "projectPath": "C:\\Users\\MC\\Desktop\\C# Training\\FormApi\\FormAPI\\FormAPI.csproj",
         "packagesPath": "C:\\Users\\MC\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI\\FormAPI\\obj\\",
+        "outputPath": "C:\\Users\\MC\\Desktop\\C# Training\\FormApi\\FormAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

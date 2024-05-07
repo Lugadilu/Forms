@@ -35,8 +35,8 @@ namespace FormAPI.Models
         public string? Gender { get; set; }
         public string? LanguageCode { get; set; }
         public string? Nationality { get; set; }
-        [Range(1000000000, 9999999999, ErrorMessage = "Phone number must be 10 digits")]
-        public int PhoneNumber { get; set; }
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Phone number must be 10 digits")]
+        public string PhoneNumber { get; set; }
         [EmailAddress(ErrorMessage = "Invalid email address")]
         public string Email { get; set; }
         //public DateTime? Arrival { get; set; }

@@ -182,15 +182,73 @@ namespace FormAPI.Controllers
                 {
                     return BadRequest("FormRecord object is null");
                 }
+
                 // Perform additional validation if needed
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
+
                 // Create the form record
                 var createdFormRecord = await formRepository.CreateFormRecordAsync(formRecord);
-                // Return the created form record
-                return CreatedAtRoute("GetFormRecord", new { id = createdFormRecord.Id }, createdFormRecord);
+
+                // Check if the record was created successfully
+                if (createdFormRecord == null)
+                {
+                    return StatusCode(500, "Failed to create the form record");
+                }
+
+                // Return the created form record along with a route to retrieve it
+                return CreatedAtAction(nameof(GetFormRecord), new { id = createdFormRecord.Id }, createdFormRecord);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<FormRecord>> UpdateFormRecord(int id, FormRecord formRecord)
+        {
+            var formRepository = new FormRepository(_connectionString);
+
+            try
+            {
+                if (formRecord == null || formRecord.Id != id)
+                {
+                    return BadRequest("Invalid request");
+                }
+
+                var updatedFormRecord = await formRepository.UpdateFormRecordAsync(formRecord);
+
+                if (updatedFormRecord == null)
+                {
+                    return NotFound("FormRecord not found.");
+                }
+
+                return Ok(updatedFormRecord);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<bool>> DeleteFormRecord(int id)
+        {
+            var formRepository = new FormRepository(_connectionString);
+
+            try
+            {
+                var isDeleted = await formRepository.DeleteFormRecordAsync(id);
+
+                if (!isDeleted)
+                {
+                    return NotFound("FormRecord not found.");
+                }
+
+                return Ok(true);
             }
             catch (Exception ex)
             {

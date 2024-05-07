@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using FormAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace FormAPI.Migrations
+namespace FormAPI.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240506214951_FormRecordColumn2")]
+    partial class FormRecordColumn2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,71 +104,89 @@ namespace FormAPI.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("Address");
 
                     b.Property<DateTime>("Arrival")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("Arrival");
 
                     b.Property<Dictionary<string, string>>("Attributes")
                         .IsRequired()
-                        .HasColumnType("hstore");
+                        .HasColumnType("hstore")
+                        .HasColumnName("Attributes");
 
                     b.Property<DateTime?>("Birthdate")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("Birthdate");
 
                     b.Property<string>("City")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("City");
 
                     b.Property<string>("Country")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("Country");
 
                     b.Property<DateTime>("Departure")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("Departure");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("Email");
 
                     b.Property<string>("FieldType")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("FieldType");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("FirstName");
 
                     b.Property<string>("Gender")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("Gender");
 
                     b.Property<string>("Kind")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("Kind");
 
                     b.Property<string>("LanguageCode")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("LanguageCode");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("LastName");
 
                     b.Property<string>("Nationality")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("Nationality");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("PhoneNumber");
 
                     b.Property<string>("SecondName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("SecondName");
 
                     b.Property<string>("Zip")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("Zip");
 
                     b.HasKey("Id");
 
-                    b.ToTable("formrecords");
+                    b.ToTable("formrecords", (string)null);
 
                     b.HasData(
                         new
