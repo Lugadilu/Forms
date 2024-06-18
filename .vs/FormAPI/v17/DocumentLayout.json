@@ -3,20 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\models\\formrecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\models\\formrecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\models\\formfield.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\models\\formfield.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\models\\form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\models\\form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\dtos\\formdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\dtos\\formdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\models\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\models\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\models\\form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\models\\form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\dtos\\formrecorddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -27,16 +31,20 @@
       "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\dtos\\formfielddto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\models\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\models\\mappingprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\controllers\\formscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\controllers\\formscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\context\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\context\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\controllers\\formscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\controllers\\formscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\models\\formfield.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\models\\formfield.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\models\\formrecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\models\\formrecord.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\repositories\\formrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -45,14 +53,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\repositories\\iformrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\repositories\\iformrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\startup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -71,45 +71,15 @@
       "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\service\\formservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\MC\\Desktop\\C# Training\\FormAPI\\FormAPI\\Data\\Migrations\\20240520172000_InitialCreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\main\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\main\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\MC\\Desktop\\keys\\Form\\Form\\openapi.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\MC\\Desktop\\C# Training\\FormAPI\\FormAPI\\Models\\FormCreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\data\\migrations\\20240520172827_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\data\\migrations\\20240520172827_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\data\\migrations\\20240523125315_attributesupdate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\data\\migrations\\20240523125315_attributesupdate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\data\\migrations\\20240610061616_firstmigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\data\\migrations\\20240610061616_firstmigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\data\\migrations\\20240612053750_secondmigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\data\\migrations\\20240612053750_secondmigration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\data\\migrations\\20240612051340_initialassociation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\data\\migrations\\20240612051340_initialassociation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\data\\migrations\\20240612051510_seedforms.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\data\\migrations\\20240612051510_seedforms.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|c:\\users\\mc\\desktop\\c# training\\formapi - copy -1\\formapi\\data\\migrations\\20240613035425_modelchanges.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E6251457-DF5B-41B6-8F39-8C0F298A0EA4}|FormAPI\\FormAPI.csproj|solutionrelative:formapi\\data\\migrations\\20240613035425_modelchanges.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -119,7 +89,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -139,20 +109,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
+              "Title": "startup.cs",
+              "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\startup.cs",
+              "RelativeDocumentMoniker": "FormAPI\\startup.cs",
+              "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\startup.cs",
+              "RelativeToolTip": "FormAPI\\startup.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAFkAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-09T18:19:05.048Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "FormRecordDto.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\DTOs\\FormRecordDto.cs",
               "RelativeDocumentMoniker": "FormAPI\\DTOs\\FormRecordDto.cs",
               "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\DTOs\\FormRecordDto.cs",
               "RelativeToolTip": "FormAPI\\DTOs\\FormRecordDto.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAAC0AAAAJAAAA",
+              "ViewState": "AQIAACAAAAAAAAAAAAA7wAYAAAAKAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-14T11:04:37.606Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "FormRepository.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Repositories\\FormRepository.cs",
               "RelativeDocumentMoniker": "FormAPI\\Repositories\\FormRepository.cs",
@@ -164,97 +147,83 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 10,
               "Title": "FormRecord.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Models\\FormRecord.cs",
               "RelativeDocumentMoniker": "FormAPI\\Models\\FormRecord.cs",
               "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Models\\FormRecord.cs",
               "RelativeToolTip": "FormAPI\\Models\\FormRecord.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAADcAAAAHAAAA",
+              "ViewState": "AQIAAAQAAAAAAAAAAAAUwAcAAAAHAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-04T02:17:14.931Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-04T02:17:14.931Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "Form.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Models\\Form.cs",
               "RelativeDocumentMoniker": "FormAPI\\Models\\Form.cs",
               "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Models\\Form.cs",
               "RelativeToolTip": "FormAPI\\Models\\Form.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAKAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-10T20:21:50.264Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "FormFieldDto.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\DTOs\\FormFieldDto.cs",
               "RelativeDocumentMoniker": "FormAPI\\DTOs\\FormFieldDto.cs",
               "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\DTOs\\FormFieldDto.cs",
               "RelativeToolTip": "FormAPI\\DTOs\\FormFieldDto.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAIAAAA",
+              "ViewState": "AQIAAAcAAAAAAAAAAAAgwA8AAAAKAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-14T11:04:07.323Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "FormDto.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\DTOs\\FormDto.cs",
               "RelativeDocumentMoniker": "FormAPI\\DTOs\\FormDto.cs",
               "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\DTOs\\FormDto.cs",
               "RelativeToolTip": "FormAPI\\DTOs\\FormDto.cs",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAowAwAAAAKAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-14T11:03:34.94Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 3,
               "Title": "MappingProfile.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Models\\MappingProfile.cs",
               "RelativeDocumentMoniker": "FormAPI\\Models\\MappingProfile.cs",
               "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Models\\MappingProfile.cs",
               "RelativeToolTip": "FormAPI\\Models\\MappingProfile.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAABYAAAAeAAAA",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAoAAAAnAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-14T11:39:49.951Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 9,
               "Title": "FormField.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Models\\FormField.cs",
               "RelativeDocumentMoniker": "FormAPI\\Models\\FormField.cs",
               "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Models\\FormField.cs",
               "RelativeToolTip": "FormAPI\\Models\\FormField.cs",
-              "ViewState": "AQIAABAAAAAAAAAAAAAgwBsAAAAIAAAA",
+              "ViewState": "AQIAAAUAAAAAAAAAAAAxwAkAAAAIAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-04T01:35:29.444Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-04T01:35:29.444Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
-              "Title": "20240613035425_ModelChanges.cs",
-              "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240613035425_ModelChanges.cs",
-              "RelativeDocumentMoniker": "FormAPI\\Data\\Migrations\\20240613035425_ModelChanges.cs",
-              "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240613035425_ModelChanges.cs",
-              "RelativeToolTip": "FormAPI\\Data\\Migrations\\20240613035425_ModelChanges.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-13T03:54:30.755Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "IFormRepository.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Repositories\\IFormRepository.cs",
               "RelativeDocumentMoniker": "FormAPI\\Repositories\\IFormRepository.cs",
@@ -266,87 +235,42 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "startup.cs",
-              "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\startup.cs",
-              "RelativeDocumentMoniker": "FormAPI\\startup.cs",
-              "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\startup.cs",
-              "RelativeToolTip": "FormAPI\\startup.cs",
-              "ViewState": "AQIAACAAAAAAAAAAAAAwwC8AAAAMAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-09T18:19:05.048Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Context\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "FormAPI\\Context\\ApplicationDbContext.cs",
               "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Context\\ApplicationDbContext.cs",
               "RelativeToolTip": "FormAPI\\Context\\ApplicationDbContext.cs",
-              "ViewState": "AQIAAGMAAAAAAAAAAAAmwDcAAAAOAAAA",
+              "ViewState": "AQIAACMAAAAAAAAAAAAAAC8AAAA/AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-09T04:41:52.255Z"
+              "WhenOpened": "2024-04-09T04:41:52.255Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 7,
               "Title": "FormsController.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Controllers\\FormsController.cs",
               "RelativeDocumentMoniker": "FormAPI\\Controllers\\FormsController.cs",
               "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Controllers\\FormsController.cs",
               "RelativeToolTip": "FormAPI\\Controllers\\FormsController.cs",
-              "ViewState": "AQIAACgAAAAAAAAAAAAUwDIAAAAJAAAA",
+              "ViewState": "AQIAADoBAAAAAAAAAAAowEMBAABNAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-30T12:24:13.506Z"
+              "WhenOpened": "2024-05-30T12:24:13.506Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "20240612053750_SecondMigration.cs",
-              "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240612053750_SecondMigration.cs",
-              "RelativeDocumentMoniker": "FormAPI\\Data\\Migrations\\20240612053750_SecondMigration.cs",
-              "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240612053750_SecondMigration.cs",
-              "RelativeToolTip": "FormAPI\\Data\\Migrations\\20240612053750_SecondMigration.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-12T05:37:50.987Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Program.cs",
               "RelativeDocumentMoniker": "FormAPI\\Program.cs",
               "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Program.cs",
               "RelativeToolTip": "FormAPI\\Program.cs",
-              "ViewState": "AQIAACEAAAAAAAAAAAAiwCgAAAAWAAAA",
+              "ViewState": "AQIAABkAAAAAAAAAAAAYwCcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-09T05:09:20.708Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "20240612051340_InitialAssociation.cs",
-              "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240612051340_InitialAssociation.cs",
-              "RelativeDocumentMoniker": "FormAPI\\Data\\Migrations\\20240612051340_InitialAssociation.cs",
-              "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240612051340_InitialAssociation.cs",
-              "RelativeToolTip": "FormAPI\\Data\\Migrations\\20240612051340_InitialAssociation.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-12T05:13:41.023Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 26,
-              "Title": "20240612051510_SeedForms.cs",
-              "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240612051510_SeedForms.cs",
-              "RelativeDocumentMoniker": "FormAPI\\Data\\Migrations\\20240612051510_SeedForms.cs",
-              "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240612051510_SeedForms.cs",
-              "RelativeToolTip": "FormAPI\\Data\\Migrations\\20240612051510_SeedForms.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-12T05:15:10.93Z"
+              "WhenOpened": "2024-04-09T05:09:20.708Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -359,18 +283,6 @@
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAABDAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2024-04-08T01:46:33.542Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "20240610061616_FirstMigration.cs",
-              "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240610061616_FirstMigration.cs",
-              "RelativeDocumentMoniker": "FormAPI\\Data\\Migrations\\20240610061616_FirstMigration.cs",
-              "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240610061616_FirstMigration.cs",
-              "RelativeToolTip": "FormAPI\\Data\\Migrations\\20240610061616_FirstMigration.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-10T06:16:33.513Z"
             },
             {
               "$type": "Document",
@@ -398,7 +310,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 19,
               "Title": "20240523125315_AttributesUpdate.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240523125315_AttributesUpdate.cs",
               "RelativeDocumentMoniker": "FormAPI\\Data\\Migrations\\20240523125315_AttributesUpdate.cs",
@@ -422,30 +334,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "20240520172827_InitialCreate.cs",
-              "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240520172827_InitialCreate.cs",
-              "RelativeDocumentMoniker": "FormAPI\\Data\\Migrations\\20240520172827_InitialCreate.cs",
-              "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Data\\Migrations\\20240520172827_InitialCreate.cs",
-              "RelativeToolTip": "FormAPI\\Data\\Migrations\\20240520172827_InitialCreate.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-20T17:28:27.457Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 17,
-              "Title": "20240520172000_InitialCreate.cs",
-              "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI\\FormAPI\\Data\\Migrations\\20240520172000_InitialCreate.cs",
-              "RelativeDocumentMoniker": "..\\FormAPI\\FormAPI\\Data\\Migrations\\20240520172000_InitialCreate.cs",
-              "ToolTip": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI\\FormAPI\\Data\\Migrations\\20240520172000_InitialCreate.cs",
-              "RelativeToolTip": "..\\FormAPI\\FormAPI\\Data\\Migrations\\20240520172000_InitialCreate.cs",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-20T17:20:21.25Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI - Copy -1\\FormAPI\\Main\\Program.cs",
               "RelativeDocumentMoniker": "FormAPI\\Main\\Program.cs",
@@ -457,19 +346,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "openapi.json",
-              "DocumentMoniker": "C:\\Users\\MC\\Desktop\\keys\\Form\\Form\\openapi.json",
-              "RelativeDocumentMoniker": "..\\..\\keys\\Form\\Form\\openapi.json",
-              "ToolTip": "C:\\Users\\MC\\Desktop\\keys\\Form\\Form\\openapi.json",
-              "RelativeToolTip": "..\\..\\keys\\Form\\Form\\openapi.json",
-              "ViewState": "AQIAAAUHAAAAAAAAAABxwLoDAAAaAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-04-15T05:05:42.234Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 18,
               "Title": "FormCreate.cs",
               "DocumentMoniker": "C:\\Users\\MC\\Desktop\\C# Training\\FormAPI\\FormAPI\\Models\\FormCreate.cs",
               "RelativeDocumentMoniker": "..\\FormAPI\\FormAPI\\Models\\FormCreate.cs",
