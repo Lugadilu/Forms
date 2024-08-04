@@ -1,5 +1,365 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using FormAPI.Context;
+using FormAPI.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace FormAPI.Repositories
+{
+    public class FormRepository : IFormRepository
+    {
+        private readonly ApplicationDbContext _context;
+
+        public FormRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Form>> GetAllFormsAsync()
+        {
+            try
+            {
+                return await _context.forms.Include(f => f.Pages)
+                                           .ThenInclude(p => p.FormFields)
+                                           .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw; // Re-throw the exception
+            }
+        }
+
+        public async Task<Form> GetFormByIdAsync(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException("Invalid form ID.", nameof(id));
+            }
+
+            try
+            {
+                return await _context.forms.Include(f => f.Pages)
+                                           .ThenInclude(p => p.FormFields)
+                                           .FirstOrDefaultAsync(f => f.Id == id);
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw; // Re-throw the exception
+            }
+        }
+
+        public async Task<Form> CreateFormAsync(Form form)
+        {
+            if (form == null)
+            {
+                throw new ArgumentNullException(nameof(form), "Form cannot be null.");
+            }
+
+            try
+            {
+                _context.forms.Add(form);
+                await _context.SaveChangesAsync();
+                return form;
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw; // Re-throw the exception
+            }
+        }
+
+        public async Task<Form> UpdateFormAsync(Form form)
+        {
+            if (form.Id == Guid.Empty)
+            {
+                throw new ArgumentException("Form Id must be provided.", nameof(form.Id));
+            }
+
+            try
+            {
+                _context.Entry(form).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return form;
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw;
+            }
+        }
+
+        public async Task DeleteFormAsync(Guid id)
+        {
+            try
+            {
+                var form = await _context.forms.FindAsync(id);
+                if (form != null)
+                {
+                    _context.forms.Remove(form);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<FormField>> GetAllFormFieldsAsync()
+        {
+            try
+            {
+                return await _context.formfields.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw; // Re-throw the exception
+            }
+        }
+
+        public async Task<FormField> CreateFormFieldAsync(FormField formField)
+        {
+            if (formField == null)
+            {
+                throw new ArgumentNullException(nameof(formField), "Form field cannot be null.");
+            }
+
+            try
+            {
+                _context.formfields.Add(formField);
+                await _context.SaveChangesAsync();
+                return formField;
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteFormFieldAsync(Guid id)
+        {
+            try
+            {
+                var formField = await _context.formfields.FindAsync(id);
+                if (formField != null)
+                {
+                    _context.formfields.Remove(formField);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<FormRecord>> GetAllFormRecordsAsync()
+        {
+            try
+            {
+                return await _context.formrecords.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw; // Re-throw the exception
+            }
+        }
+
+        public async Task<FormRecord> GetFormRecordByIdAsync(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException("Invalid form record ID.", nameof(id));
+            }
+
+            try
+            {
+                return await _context.formrecords.FindAsync(id);
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw; // Re-throw the exception
+            }
+        }
+
+        public async Task<FormRecord> CreateFormRecordAsync(FormRecord formRecord)
+        {
+            if (formRecord == null)
+            {
+                throw new ArgumentNullException(nameof(formRecord), "Form record cannot be null.");
+            }
+
+            try
+            {
+                _context.formrecords.Add(formRecord);
+                await _context.SaveChangesAsync();
+                return formRecord;
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw; // Re-throw the exception
+            }
+        }
+
+        public async Task<FormRecord> UpdateFormRecordAsync(FormRecord formRecord)
+        {
+            if (formRecord.Id == Guid.Empty)
+            {
+                throw new ArgumentException("Form record Id must be provided.", nameof(formRecord.Id));
+            }
+
+            try
+            {
+                _context.Entry(formRecord).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return formRecord;
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw; // Re-throw the exception
+            }
+        }
+
+        public async Task<bool> DeleteFormRecordAsync(Guid id)
+        {
+            try
+            {
+                var formRecord = await _context.formrecords.FindAsync(id);
+                if (formRecord != null)
+                {
+                    _context.formrecords.Remove(formRecord);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw; // Re-throw the exception
+            }
+        }
+
+        public async Task<IEnumerable<FormRecord>> GetFormRecordsByFormIdAsync(Guid formId)
+        {
+            if (formId == Guid.Empty)
+            {
+                throw new ArgumentException("Invalid form ID.", nameof(formId));
+            }
+
+            try
+            {
+                return await _context.formrecords.Where(fr => fr.FormId == formId).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw;
+            }
+        }
+
+        public async Task<FormRecord> CreateFormRecordForFormAsync(Guid formId, FormRecord formRecord)
+        {
+            if (formRecord == null)
+            {
+                throw new ArgumentNullException(nameof(formRecord), "Form record cannot be null.");
+            }
+
+            formRecord.FormId = formId;
+
+            try
+            {
+                _context.formrecords.Add(formRecord);
+                await _context.SaveChangesAsync();
+                return formRecord;
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw;
+            }
+        }
+
+        public async Task<FormRecord> UpdateFormRecordForFormAsync(Guid formId, FormRecord formRecord)
+        {
+            if (formRecord == null)
+            {
+                throw new ArgumentNullException(nameof(formRecord), "Form record cannot be null.");
+            }
+
+            if (formRecord.Id == Guid.Empty)
+            {
+                throw new ArgumentException("Form record Id must be provided.", nameof(formRecord.Id));
+            }
+
+            formRecord.FormId = formId;
+
+            try
+            {
+                _context.Entry(formRecord).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return formRecord;
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteFormRecordForFormAsync(Guid formId, Guid recordId)
+        {
+            if (formId == Guid.Empty || recordId == Guid.Empty)
+            {
+                throw new ArgumentException("Invalid form or record ID.");
+            }
+
+            try
+            {
+                var formRecord = await _context.formrecords.FirstOrDefaultAsync(fr => fr.Id == recordId && fr.FormId == formId);
+                if (formRecord != null)
+                {
+                    _context.formrecords.Remove(formRecord);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                // Error handling
+                throw;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+/*
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FormAPI.Context;
 using FormAPI.Models;
@@ -30,10 +390,10 @@ namespace FormAPI.Repositories
             }
         }
 
-        public async Task<Form> GetFormByIdAsync(int id)
+        public async Task<Form> GetFormByIdAsync(Guid id)
         {
             // Parameter validation
-            if (id <= 0)
+            if ( id == Guid.Empty)
             {
                 throw new ArgumentException("Invalid form ID.", nameof(id));
             }
@@ -74,13 +434,8 @@ namespace FormAPI.Repositories
 
         public async Task<Form> UpdateFormAsync(Form form)
         {
-            // Parameter validation
-            if (form == null)
-            {
-                throw new ArgumentNullException(nameof(form), "Form cannot be null.");
-            }
-
-            if (form.Id == 0)
+            
+            if (form.Id == Guid.Empty) // Check for empty Guid
             {
                 throw new ArgumentException("Form Id must be provided.", nameof(form.Id));
             }
@@ -95,18 +450,14 @@ namespace FormAPI.Repositories
             {
                 // Error handling
                 // Example: Log.Error(ex, "Error occurred while updating form");
-                throw; // Re-throw the exception
+                throw;
             }
         }
 
-        public async Task DeleteFormAsync(int id)
+       
+        public async Task DeleteFormAsync(Guid id) // Changed parameter type to Guid
         {
-            // Parameter validation
-            if (id <= 0)
-            {
-                throw new ArgumentException("Invalid form ID.", nameof(id));
-            }
-
+            // No parameter validation needed for Guid (cannot be less than or equal to zero)
             try
             {
                 var form = await _context.forms.FindAsync(id);
@@ -120,9 +471,10 @@ namespace FormAPI.Repositories
             {
                 // Error handling
                 // Example: Log.Error(ex, $"Error occurred while deleting form with ID {id}");
-                throw; // Re-throw the exception
+                throw;
             }
         }
+
 
         public async Task<IEnumerable<FormField>> GetAllFormFieldsAsync()
         {
@@ -138,13 +490,10 @@ namespace FormAPI.Repositories
             }
         }
 
+        
         public async Task<FormField> CreateFormFieldAsync(FormField formField)
         {
-            // Parameter validation
-            if (formField == null)
-            {
-                throw new ArgumentNullException(nameof(formField), "Form field cannot be null.");
-            }
+            // Parameter validation remains the same
 
             try
             {
@@ -156,18 +505,15 @@ namespace FormAPI.Repositories
             {
                 // Error handling
                 // Example: Log.Error(ex, "Error occurred while creating form field");
-                throw; // Re-throw the exception
+                throw;
             }
         }
 
-        public async Task<bool> DeleteFormFieldAsync(int id)
-        {
-            // Parameter validation
-            if (id <= 0)
-            {
-                throw new ArgumentException("Invalid form field ID.", nameof(id));
-            }
 
+       
+        public async Task<bool> DeleteFormFieldAsync(Guid id) // Changed parameter type to Guid
+        {
+            // No parameter validation needed for Guid (cannot be less than or equal to zero)
             try
             {
                 var formField = await _context.formfields.FindAsync(id);
@@ -183,9 +529,10 @@ namespace FormAPI.Repositories
             {
                 // Error handling
                 // Example: Log.Error(ex, $"Error occurred while deleting form field with ID {id}");
-                throw; // Re-throw the exception
+                throw;
             }
         }
+
 
         public async Task<IEnumerable<FormRecord>> GetAllFormRecordsAsync()
         {
@@ -201,10 +548,10 @@ namespace FormAPI.Repositories
             }
         }
 
-        public async Task<FormRecord> GetFormRecordByIdAsync(int id)
+        public async Task<FormRecord> GetFormRecordByIdAsync(Guid id)
         {
             // Parameter validation
-            if (id <= 0)
+            if (id == Guid.Empty)
             {
                 throw new ArgumentException("Invalid form record ID.", nameof(id));
             }
@@ -223,11 +570,7 @@ namespace FormAPI.Repositories
 
         public async Task<FormRecord> CreateFormRecordAsync(FormRecord formRecord)
         {
-            // Parameter validation
-            if (formRecord == null)
-            {
-                throw new ArgumentNullException(nameof(formRecord), "Form record cannot be null.");
-            }
+           
 
             try
             {
@@ -245,13 +588,9 @@ namespace FormAPI.Repositories
 
         public async Task<FormRecord> UpdateFormRecordAsync(FormRecord formRecord)
         {
-            // Parameter validation
-            if (formRecord == null)
-            {
-                throw new ArgumentNullException(nameof(formRecord), "Form record cannot be null.");
-            }
+           
 
-            if (formRecord.Id == 0)
+            if (formRecord.Id == Guid.Empty)
             {
                 throw new ArgumentException("Form record Id must be provided.", nameof(formRecord.Id));
             }
@@ -270,13 +609,9 @@ namespace FormAPI.Repositories
             }
         }
 
-        public async Task<bool> DeleteFormRecordAsync(int id)
+        public async Task<bool> DeleteFormRecordAsync(Guid id)
         {
-            // Parameter validation
-            if (id <= 0)
-            {
-                throw new ArgumentException("Invalid form record ID.", nameof(id));
-            }
+           
 
             try
             {
@@ -299,9 +634,9 @@ namespace FormAPI.Repositories
 
 
 
-        public async Task<IEnumerable<FormRecord>> GetFormRecordsByFormIdAsync(int formId)
+        public async Task<IEnumerable<FormRecord>> GetFormRecordsByFormIdAsync(Guid formId) // Changed parameter type to Guid
         {
-            if (formId <= 0)
+            if (formId == Guid.Empty) // Use direct comparison for Guid
             {
                 throw new ArgumentException("Invalid form ID.", nameof(formId));
             }
@@ -313,11 +648,13 @@ namespace FormAPI.Repositories
             catch (Exception ex)
             {
                 // Error handling
+                // Example: Log.Error(ex, "Error occurred while retrieving form records by form ID");
                 throw;
             }
         }
 
-        public async Task<FormRecord> CreateFormRecordForFormAsync(int formId, FormRecord formRecord)
+
+        public async Task<FormRecord> CreateFormRecordForFormAsync(Guid formId, FormRecord formRecord) // All parameters are now Guid
         {
             if (formRecord == null)
             {
@@ -335,18 +672,20 @@ namespace FormAPI.Repositories
             catch (Exception ex)
             {
                 // Error handling
+                // Example: Log.Error(ex, "Error occurred while creating form record for form");
                 throw;
             }
         }
 
-        public async Task<FormRecord> UpdateFormRecordForFormAsync(int formId, FormRecord formRecord)
+
+        public async Task<FormRecord> UpdateFormRecordForFormAsync(Guid formId, FormRecord formRecord) // Changed parameter type to Guid
         {
             if (formRecord == null)
             {
                 throw new ArgumentNullException(nameof(formRecord), "Form record cannot be null.");
             }
 
-            if (formRecord.Id == 0)
+            if (formRecord.Id == Guid.Empty) // Check for empty Guid
             {
                 throw new ArgumentException("Form record Id must be provided.", nameof(formRecord.Id));
             }
@@ -362,13 +701,15 @@ namespace FormAPI.Repositories
             catch (Exception ex)
             {
                 // Error handling
+                // Example: Log.Error(ex, "Error occurred while updating form record for form");
                 throw;
             }
         }
 
-        public async Task<bool> DeleteFormRecordForFormAsync(int formId, int recordId)
+
+        public async Task<bool> DeleteFormRecordForFormAsync(Guid formId, Guid recordId) // Changed parameter types to Guid
         {
-            if (formId <= 0 || recordId <= 0)
+            if (formId == Guid.Empty || recordId == Guid.Empty) // Check for empty Guids
             {
                 throw new ArgumentException("Invalid form or record ID.");
             }
@@ -387,13 +728,15 @@ namespace FormAPI.Repositories
             catch (Exception ex)
             {
                 // Error handling
+                // Example: Log.Error(ex, "Error occurred while deleting form record for form");
                 throw;
             }
         }
+
     }
 }
 
-
+*/
 
 
 

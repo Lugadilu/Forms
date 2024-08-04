@@ -1,12 +1,49 @@
-﻿using Newtonsoft.Json;
+﻿
+using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace FormAPI.Models
 {
     public class FormRecord
     {
-        [JsonIgnore]//to hide id in requests it uses newtonsoft.json
-        public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+        [JsonIgnore]
+        public Guid FormId { get; set; }
+        [JsonIgnore]
+        public Form Form { get; set; } // Navigation property
+
+        // JSON string to store form field values
+        public string FormFieldValues { get; set; } = "{}"; // Default to empty JSON object
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+/*
+
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FormAPI.Models
+{
+    public class FormRecord
+    {
+        // [JsonIgnore]//to hide id in requests it uses newtonsoft.json
+        // public int Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+
+
         [Required(ErrorMessage = "First name is required")]
         public string FirstName { get; set; }
         public FormRecord()
@@ -49,31 +86,17 @@ namespace FormAPI.Models
         public string? Zip { get; set; }
         public string? City { get; set; }
         public string? Country { get; set; }
+        [Required]
+        public string Rating { get; set; }
 
-        
-        public int FormId { get; set; }  // Foreign key to the Form entity
 
-       [JsonIgnore]
+        // public int FormId { get; set; }  // Foreign key to the Form entity
+
+        public Guid FormId { get; set; }  // Changed to Guid
+
+        [JsonIgnore]
         public Form Form { get; set; } // Navigation property
 
-
-        //public string Kind { get; set; } // Represents the category or type of the form field
-        //public string FieldType { get; set; } // Specifies the type of data expected for the form field
-        //public Dictionary<string, string> Attributes { get; set; } // Additional attributes or metadata associated with the form field
-
-        //public int FormId { get; set; } // Foreign key to the Form entity
-        //public Form Form { get; set; } // Navigation property for the associated Form
-
-        //public int FormFieldId { get; set; } // Foreign key to the FormField entity
-        // public FormField FormField { get; set; } // Navigation property for the associated FormFiel
-        //public ICollection<FormField> FormFields { get; set; }
-
-
-        //public ForField zFormfield {get; set; } every field would belong to one formrecord
-        // Method to convert FormRecord to JSON
-        //public string ToJson()
-        //{
-        //    return JsonConvert.SerializeObject(this);
-        //}
     }
 }
+*/

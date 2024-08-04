@@ -5,10 +5,11 @@ namespace FormAPI.Models
 {
     public class FormField //provides metadata about formfild.describes structure $xtics of each formfield
     {
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; }
 
-        [JsonIgnore]//to hide id in requests it uses newtonsoft.json
-        public int Id { get; set; }
+        //[JsonIgnore]//to hide id in requests it uses newtonsoft.json
+        //public int Id { get; set; }
 
        // [JsonIgnore]
         //public int FormId { get; set; }  // Foreign key to the Form entity
@@ -22,10 +23,14 @@ namespace FormAPI.Models
                                               //public Dictionary<string, string> Rules { get; set; }//Defines validation rules or constraints specific to the form field (e.g., minimum/maximum length, regex pattern
         public string Rules { get; set; } //= new { };
 
-        [JsonIgnore]
-        public int FormId { get; set; }  // foreign key to the form entity
 
-        [JsonIgnore]
-        public Form Form { get; set; }  // navigation property
+        //[JsonIgnore]
+        //public int FormId { get; set; }  // foreign key to the form entity
+        // public Guid FormId { get; set; }
+        //[JsonIgnore]
+        //public Form Form { get; set; }  // navigation property
+        public Guid PageId { get; set; }
+        public Page Page { get; set; }
     }
 }
+

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using FormAPI.Context;
 using FormAPI.Repositories;
-using FormAPI.Service;
+
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Reflection;
@@ -36,7 +36,8 @@ namespace FormAPI
             // Add the FormRepository and FormService as scoped services
             services.AddScoped<IFormRepository, FormRepository>();
             //services.AddScoped<FormService>();
-            // services.AddAutoMapper(typeof(MappingProfile).Assembly);
+            services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
             services.AddAutoMapper(typeof(Startup));
 
 
@@ -94,7 +95,7 @@ namespace FormAPI
 
             app.UseAuthentication();
             app.UseAuthorization(); // Add it here
-            app.UseEndpoints(endpoints =>
+           app.UseEndpoints(endpoints =>
             {
                 // Endpoint routing  // Map controllers using attribute routing
                 endpoints.MapControllers();
