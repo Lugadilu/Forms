@@ -1,4 +1,329 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FormAPI.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+
+namespace FormAPI.Context
+{
+    public class ApplicationDbContext : DbContext
+    {
+        // Added to address the timestamp issue
+        static ApplicationDbContext()
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<FormField> formfields { get; set; }
+        public DbSet<FormRecord> formrecords { get; set; }
+        public DbSet<Form> forms { get; set; }
+        public DbSet<Page> pages { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Form>()
+            .HasMany(f => f.Pages)
+            .WithOne(p => p.Form)
+            .HasForeignKey(p => p.FormId);
+
+            modelBuilder.Entity<Form>()
+                .HasMany(f => f.FormRecords)
+                .WithOne(fr => fr.Form)
+                .HasForeignKey(fr => fr.FormId);
+
+            modelBuilder.Entity<Page>()
+                .HasMany(p => p.FormFields)
+                .WithOne(ff => ff.Page)
+                .HasForeignKey(ff => ff.PageId);
+
+            base.OnModelCreating(modelBuilder);
+
+            // Seeding data
+            SeedData(modelBuilder);
+        }
+        private void SeedData(ModelBuilder modelBuilder)
+        {
+            // Create IDs for relationships
+            var formId1 = Guid.NewGuid();
+            var formId2 = Guid.NewGuid();
+            var pageId1 = Guid.NewGuid();
+            var pageId2 = Guid.NewGuid();
+            var formFieldId1 = Guid.NewGuid();
+            var formFieldId2 = Guid.NewGuid();
+            var formRecordId1 = Guid.NewGuid();
+            var formRecordId2 = Guid.NewGuid();
+
+            // Seed Forms
+            modelBuilder.Entity<Form>().HasData(
+                new Form
+                {
+                    Id = formId1,
+                    Name = "Customer Feedback Form",
+                    Description = "A form to collect customer feedback.",
+                },
+                new Form
+                {
+                    Id = formId2,
+                    Name = "Employee Survey",
+                    Description = "A survey to collect employee opinions.",
+                }
+            );
+
+            // Seed Pages
+            modelBuilder.Entity<Page>().HasData(
+                new Page
+                {
+                    Id = pageId1,
+                    FormId = formId1,
+                },
+                new Page
+                {
+                    Id = pageId2,
+                    FormId = formId2,
+                }
+            );
+
+            // Seed FormFields
+            modelBuilder.Entity<FormField>().HasData(
+                new FormField
+                {
+                    Id = formFieldId1,
+                    PageId = pageId1,
+                    Name = "profileFirstName",
+                    Required = false,
+                    Attributes = "{}",
+                    Kind = "profile",
+                    FieldType = "firstName",
+                    Rules = "{\"minLength\": 2, \"maxLength\": 128}",
+                },
+                new FormField
+                {
+                    Id = formFieldId2,
+                    PageId = pageId2,
+                    Name = "profileLastName",
+                    Required = false,
+                    Attributes = "{}",
+                    Kind = "profile",
+                    FieldType = "lastName",
+                    Rules = "{\"minLength\": 2, \"maxLength\": 128}",
+                }
+            );
+
+            // Seed FormRecords
+            modelBuilder.Entity<FormRecord>().HasData(
+                new FormRecord
+                {
+                    Id = formRecordId1,
+                    FormId = formId1,
+                    FormFieldValues = "{\"firstName\": \"Michelle\", \"lastName\": \"Smith\"}",
+                    CreatedAt = DateTime.UtcNow,
+                },
+                new FormRecord
+                {
+                    Id = formRecordId2,
+                    FormId = formId2,
+                    FormFieldValues = "{\"firstName\": \"Yael\", \"lastName\": \"Doe\"}",
+                    CreatedAt = DateTime.UtcNow,
+                }
+            );
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+using FormAPI.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+
+namespace FormAPI.Context
+{
+    public class ApplicationDbContext : DbContext
+    {
+        // Added to address the timestamp issue
+        static ApplicationDbContext()
+        {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<FormField> formfields { get; set; }
+        public DbSet<FormRecord> formrecords { get; set; }
+        public DbSet<Form> forms { get; set; }
+        public DbSet<Page> pages { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Form>()
+            .HasMany(f => f.Pages)
+            .WithOne(p => p.Form)
+            .HasForeignKey(p => p.FormId);
+
+            modelBuilder.Entity<Form>()
+                .HasMany(f => f.FormRecords)
+                .WithOne(fr => fr.Form)
+                .HasForeignKey(fr => fr.FormId);
+
+            modelBuilder.Entity<Page>()
+                .HasMany(p => p.FormFields)
+                .WithOne(ff => ff.Page)
+                .HasForeignKey(ff => ff.PageId);
+
+            base.OnModelCreating(modelBuilder);
+
+            // Seeding data
+            SeedData(modelBuilder);
+        }
+        private void SeedData(ModelBuilder modelBuilder)
+        {
+            // Create IDs for relationships
+            var formId1 = Guid.NewGuid();
+            var formId2 = Guid.NewGuid();
+            var pageId1 = Guid.NewGuid();
+            var pageId2 = Guid.NewGuid();
+            var formFieldId1 = Guid.NewGuid();
+            var formFieldId2 = Guid.NewGuid();
+            var formRecordId1 = Guid.NewGuid();
+            var formRecordId2 = Guid.NewGuid();
+
+            // Seed Forms
+            modelBuilder.Entity<Form>().HasData(
+                new Form
+                {
+                    Id = formId1,
+                    Name = "Customer Feedback Form",
+                    Description = "A form to collect customer feedback.",
+                },
+                new Form
+                {
+                    Id = formId2,
+                    Name = "Employee Survey",
+                    Description = "A survey to collect employee opinions.",
+                }
+            );
+
+            // Seed Pages
+            modelBuilder.Entity<Page>().HasData(
+                new Page
+                {
+                    Id = pageId1,
+                    FormId = formId1,
+                },
+                new Page
+                {
+                    Id = pageId2,
+                    FormId = formId2,
+                }
+            );
+
+            // Seed FormFields
+            modelBuilder.Entity<FormField>().HasData(
+                new FormField
+                {
+                    Id = formFieldId1,
+                    PageId = pageId1,
+                    Name = "profileFirstName",
+                    Required = false,
+                    Attributes = "{}",
+                    Kind = "profile",
+                    FieldType = "firstName",
+                    Rules = "{\"minLength\": 2, \"maxLength\": 128}",
+                },
+                new FormField
+                {
+                    Id = formFieldId2,
+                    PageId = pageId2,
+                    Name = "profileLastName",
+                    Required = false,
+                    Attributes = "{}",
+                    Kind = "profile",
+                    FieldType = "lastName",
+                    Rules = "{\"minLength\": 2, \"maxLength\": 128}",
+                }
+            );
+
+            // Seed FormRecords
+            modelBuilder.Entity<FormRecord>().HasData(
+                new FormRecord
+                {
+                    Id = formRecordId1,
+                    FormId = formId1,
+                    FirstName = "Michelle",
+                    SecondName = "Valeria",
+                    LastName = "Smith",
+                    Birthdate = new DateTime(1980, 1, 1),
+                    Gender = "Female",
+                    LanguageCode = "en",
+                    Nationality = "American",
+                    PhoneNumber = "1234567890",
+                    Email = "michelle@example.com",
+                    Arrival = DateTime.UtcNow,
+                    Departure = DateTime.UtcNow.AddDays(7),
+                    Address = "123 Main St",
+                    Zip = "12345",
+                    City = "New York",
+                    Country = "USA",
+                    Rating = "10/10"
+                },
+                new FormRecord
+                {
+                    Id = formRecordId2,
+                    FormId = formId2,
+                    FirstName = "Yael",
+                    SecondName = "Thomas",
+                    LastName = "Doe",
+                    Birthdate = new DateTime(1990, 2, 2),
+                    Gender = "Male",
+                    LanguageCode = "en",
+                    Nationality = "Canadian",
+                    PhoneNumber = "0987654321",
+                    Email = "yael@example.com",
+                    Arrival = DateTime.UtcNow,
+                    Departure = DateTime.UtcNow.AddDays(7),
+                    Address = "456 Elm St",
+                    Zip = "54321",
+                    City = "Toronto",
+                    Country = "Canada",
+                    Rating = "10/10"
+                }
+            );
+        }
+    }
+}
+
+*/
+
+
+
+
+
+
+
+
+
+/*
+using Microsoft.EntityFrameworkCore;
 using FormAPI.Models;
 
 namespace FormAPI.Context
@@ -130,3 +455,4 @@ namespace FormAPI.Context
         }
     }
 }
+*/

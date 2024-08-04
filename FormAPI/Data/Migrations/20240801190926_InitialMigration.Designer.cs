@@ -3,6 +3,7 @@ using System;
 using FormAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FormAPI.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240801190926_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,20 +42,6 @@ namespace FormAPI.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("forms");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("909f3db4-f61e-4fed-a1cd-b93d05cf1341"),
-                            Description = "A form to collect customer feedback.",
-                            Name = "Customer Feedback Form"
-                        },
-                        new
-                        {
-                            Id = new Guid("8a6c19d3-59b7-4e1f-bb08-3942db2226d7"),
-                            Description = "A survey to collect employee opinions.",
-                            Name = "Employee Survey"
-                        });
                 });
 
             modelBuilder.Entity("FormAPI.Models.FormField", b =>
@@ -92,30 +81,6 @@ namespace FormAPI.Data.Migrations
                     b.HasIndex("PageId");
 
                     b.ToTable("formfields");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("0147cdb1-e997-41a7-87c3-5cff34d7a8b9"),
-                            Attributes = "{}",
-                            FieldType = "firstName",
-                            Kind = "profile",
-                            Name = "profileFirstName",
-                            PageId = new Guid("91da9b52-cb82-49d2-8373-027e813f5740"),
-                            Required = false,
-                            Rules = "{\"minLength\": 2, \"maxLength\": 128}"
-                        },
-                        new
-                        {
-                            Id = new Guid("92b5dce4-c941-4c21-86b1-4435142bc480"),
-                            Attributes = "{}",
-                            FieldType = "lastName",
-                            Kind = "profile",
-                            Name = "profileLastName",
-                            PageId = new Guid("6c85514a-7ab5-4a99-ac20-4776d0668aed"),
-                            Required = false,
-                            Rules = "{\"minLength\": 2, \"maxLength\": 128}"
-                        });
                 });
 
             modelBuilder.Entity("FormAPI.Models.FormRecord", b =>
@@ -139,22 +104,6 @@ namespace FormAPI.Data.Migrations
                     b.HasIndex("FormId");
 
                     b.ToTable("formrecords");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("8ef9d581-4bf2-4c9d-ae1f-b592db155a50"),
-                            CreatedAt = new DateTime(2024, 8, 1, 19, 19, 18, 882, DateTimeKind.Utc).AddTicks(9302),
-                            FormFieldValues = "{\"firstName\": \"Michelle\", \"lastName\": \"Smith\"}",
-                            FormId = new Guid("909f3db4-f61e-4fed-a1cd-b93d05cf1341")
-                        },
-                        new
-                        {
-                            Id = new Guid("4c988889-813a-4723-8407-45717fb8c82d"),
-                            CreatedAt = new DateTime(2024, 8, 1, 19, 19, 18, 882, DateTimeKind.Utc).AddTicks(9305),
-                            FormFieldValues = "{\"firstName\": \"Yael\", \"lastName\": \"Doe\"}",
-                            FormId = new Guid("8a6c19d3-59b7-4e1f-bb08-3942db2226d7")
-                        });
                 });
 
             modelBuilder.Entity("FormAPI.Models.Page", b =>
@@ -171,18 +120,6 @@ namespace FormAPI.Data.Migrations
                     b.HasIndex("FormId");
 
                     b.ToTable("pages");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("91da9b52-cb82-49d2-8373-027e813f5740"),
-                            FormId = new Guid("909f3db4-f61e-4fed-a1cd-b93d05cf1341")
-                        },
-                        new
-                        {
-                            Id = new Guid("6c85514a-7ab5-4a99-ac20-4776d0668aed"),
-                            FormId = new Guid("8a6c19d3-59b7-4e1f-bb08-3942db2226d7")
-                        });
                 });
 
             modelBuilder.Entity("FormAPI.Models.FormField", b =>

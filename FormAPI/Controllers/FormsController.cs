@@ -4,6 +4,1591 @@ using FormAPI.DTOs;
 using FormAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace FormAPI.Controllers
+{
+    [Route("[controller]")]
+    [ApiController]
+    public class FormsController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+
+        public FormsController(ApplicationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+
+        // GET: /forms
+        [HttpGet]
+        public async Task<ActionResult> ListForms()
+        {
+            try
+            {
+                var forms = await _context.forms
+                    .Include(f => f.Pages)
+                    .ThenInclude(p => p.FormFields)
+                    .Include(f => f.FormRecords)
+                    .ToListAsync();
+
+                var formDtos = forms.Select(f => _mapper.Map<FormDto>(f)).ToList();
+
+                var response = new
+                {
+                    data = formDtos.Select(f => new
+                    {
+                        type = "form",
+                        id = f.Id,
+                        name = f.Name,
+                        description = f.Description,
+                        pages = f.Pages.Select(p => new
+                        {
+                            fields = p.Fields.Select(field => new
+                            {
+                                name = field.Name,
+                                id = field.Id,
+                                required = field.Required,
+                                attributes = field.Attributes,
+                                kind = field.Kind,
+                                fieldType = field.FieldType,
+                                rules = field.Rules
+                            }).ToList()
+                        }).ToList(),
+
+                        formRecords = f.FormRecords.Select(record => new
+                        {
+                            id = record.Id,
+                            formFieldValues = record.FormFieldValues
+                        }).ToList()
+                        
+                    }).ToList(),
+                    /*
+                    links = new
+                    {
+                        self = "../dictionary"
+                    }
+                    */
+                };
+
+                return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while retrieving forms.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while retrieving forms.",
+                    details = ex.Message
+                });
+            }
+        }
+
+
+
+        
+        [HttpPost]
+        public async Task<ActionResult> CreateForm([FromBody] FormDto formDto)
+        {
+            try
+            {
+                if (formDto == null)
+                {
+                    return BadRequest(new
+                    {
+                        error = "The formDto field is required."
+                    });
+                }
+
+                // Map the formDto to Form entity
+                var form = _mapper.Map<Form>(formDto);
+
+                // Add the form to the context
+                _context.forms.Add(form);
+                await _context.SaveChangesAsync();
+
+                // Create a response object
+                var response = new
+                {
+                    data = new
+                    {
+                        type = "form",
+                        id = form.Id,
+                        attributes = new
+                        {
+                            form.Name,
+                            form.Description,
+                            Pages = form.Pages.Select(page => new
+                            {
+                                page.Id,
+                                page.FormId,
+                                FormFields = page.FormFields.Select(field => new
+                                {
+                                    field.Id,
+                                    field.Name,
+                                    field.Required,
+                                    field.Attributes,
+                                    field.Kind,
+                                    field.FieldType,
+                                    field.Rules,
+                                    //field.PageId
+                                })
+                            })
+                        }
+                    }
+                };
+
+                return StatusCode(201, response);
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while creating the form.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while creating the form.",
+                    details = ex.Message
+                });
+            }
+        }
+
+
+
+     
+
+        // GET: forms/{formId}
+        [HttpGet("{formId}")]
+        public async Task<ActionResult> GetForm(Guid formId)
+        {
+            try
+            {
+                var form = await _context.forms
+                    .Include(f => f.Pages)
+                    .ThenInclude(p => p.FormFields)
+                    .Include(f => f.FormRecords) // Include FormRecords
+                    .FirstOrDefaultAsync(f => f.Id == formId);
+
+                if (form == null)
+                {
+                    return NotFound(new
+                    {
+                        error = "Form not found."
+                    });
+                }
+
+                var formDto = _mapper.Map<FormDto>(form);
+
+                var response = new
+                {
+                    data = new
+                    {
+                        type = "form",
+                        id = formDto.Id,
+                        name = formDto.Name,
+                        description = formDto.Description,
+                        pages = formDto.Pages.Select(p => new
+                        {
+                            fields = p.Fields.Select(field => new
+                            {
+                                name = field.Name,
+                                id = field.Id,
+                                required = field.Required,
+                                attributes = field.Attributes,
+                                kind = field.Kind,
+                                fieldType = field.FieldType,
+                                rules = field.Rules
+                            }).ToList()
+                        }).ToList(),
+                        formRecords = formDto.FormRecords.Select(record => new
+                        {
+                            id = record.Id,
+                            formFieldValues = record.FormFieldValues
+                        }).ToList()
+                    }
+                };
+
+                var jsonResponse = JsonConvert.SerializeObject(response);
+                Console.WriteLine(jsonResponse); // Log the JSON response
+
+                var result = new ObjectResult(response)
+                {
+                    StatusCode = 200
+                };
+                result.ContentTypes.Clear();
+                result.ContentTypes.Add("application/vnd+json");
+
+                return result;
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while retrieving the form.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while retrieving the form.",
+                    details = ex.Message
+                });
+            }
+        }
+
+
+
+       
+
+        // DELETE: forms/{formId}
+        [HttpDelete("{formId}")]
+        public async Task<ActionResult> DeleteForm(Guid formId)
+        {
+            try
+            {
+                var form = await _context.forms.FindAsync(formId);
+                if (form == null)
+                {
+                    return NotFound(new
+                    {
+                        error = "Form not found."
+                    });
+                }
+
+                _context.forms.Remove(form);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while deleting the form.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while deleting the form.",
+                    details = ex.Message
+                });
+            }
+        }
+
+        
+        [HttpPut("{formId}")]
+        public async Task<ActionResult> UpdateForm(Guid formId, [FromBody] FormDto formDto)
+        {
+            try
+            {
+                var existingForm = await _context.forms
+                    .Include(f => f.Pages)
+                    .ThenInclude(p => p.FormFields)
+                    .FirstOrDefaultAsync(f => f.Id == formId);
+
+                if (existingForm == null)
+                {
+                    return NotFound(new { error = "Form not found." });
+                }
+
+                // Update form properties
+                existingForm.Name = formDto.Name;
+                existingForm.Description = formDto.Description;
+
+                // Update pages and form fields
+                foreach (var pageDto in formDto.Pages)
+                {
+                    var existingPage = existingForm.Pages.FirstOrDefault(p => p.Id == pageDto.Id);
+                    if (existingPage == null)
+                    {
+                        var newPage = _mapper.Map<Page>(pageDto);
+                        existingForm.Pages.Add(newPage);
+                    }
+                    else
+                    {
+                        existingPage.FormFields.Clear();
+                        foreach (var fieldDto in pageDto.Fields)
+                        {
+                            var newField = _mapper.Map<FormField>(fieldDto);
+                            existingPage.FormFields.Add(newField);
+                        }
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+                var response = new
+                {
+                    data = new
+                    {
+                        type = "form",
+                        id = existingForm.Id,
+                        attributes = new
+                        {
+                            existingForm.Name,
+                            existingForm.Description,
+                            Pages = existingForm.Pages.Select(page => new
+                            {
+                                page.Id,
+                                page.FormId,
+                                FormFields = page.FormFields.Select(field => new
+                                {
+                                    field.Id,
+                                    field.Name,
+                                    field.Required,
+                                    field.Attributes,
+                                    field.Kind,
+                                    field.FieldType,
+                                    field.Rules,
+                                    field.PageId
+                                })
+                            })
+                        }
+                    }
+                };
+
+                //return Ok(response);
+
+                var jsonResponse = JsonConvert.SerializeObject(response);
+                Console.WriteLine(jsonResponse); // Log the JSON response
+
+                var result = new ObjectResult(response)
+                {
+                    StatusCode = 200
+                };
+                result.ContentTypes.Clear();
+                result.ContentTypes.Add("application/vnd.api+json");
+
+                return result;
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while updating the form.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while updating the form.",
+                    details = ex.Message
+                });
+            }
+        }
+        
+
+
+
+        // GET: /forms/fields
+        [HttpGet("fields")]
+        public async Task<ActionResult> ListFormFields()
+        {
+            try
+            {
+                var formFields = await _context.formfields.ToListAsync();
+                var formFieldDtos = formFields.Select(ff => _mapper.Map<FormFieldDto>(ff)).ToList();
+
+                var response = new
+                {
+                    data = formFieldDtos.Select(ff => new
+                    {
+                        type = "formfield",
+                        id = ff.Id,
+                        name = ff.Name,
+                        required = ff.Required,
+                        attributes = ff.Attributes,
+                        kind = ff.Kind,
+                        fieldType = ff.FieldType,
+                        rules = ff.Rules
+                    }).ToList(),
+                    links = new
+                    {
+                        self = "../dictionary"
+                    }
+                };
+
+                return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while retrieving form fields.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while retrieving form fields.",
+                    details = ex.Message
+                });
+            }
+        }
+
+      
+    }
+}
+
+
+
+
+
+
+
+
+
+
+/*
+//with dto and manual instansation
+using AutoMapper;
+using FormAPI.Context;
+using FormAPI.DTOs;
+using FormAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace FormAPI.Controllers
+{
+    //[Route("api/[controller]")]
+    [Route("[controller]")]
+    [ApiController]
+    public class FormsController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+
+        public FormsController(ApplicationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        // GET: api/forms
+        [HttpGet]
+        public async Task<ActionResult> ListForms()
+        {
+            try
+            {
+                var forms = await _context.forms.Select(f => new
+                {
+                    type = "form",
+                    id = f.Id,
+                    name = f.Name,
+                    description = f.Description,
+                    pages = f.Pages.Select(p => new
+                    {
+                        fields = p.FormFields.Select(field => new
+                        {
+                            name = field.Name,
+                            id = field.Id,
+                            required = field.Required,
+                            attributes = field.Attributes,
+                            kind = field.Kind,
+                            fieldType = field.FieldType,
+                            rules = field.Rules
+                        })
+                    })
+                }).ToListAsync();
+
+                var response = new
+                {
+                    data = forms,
+                    links = new
+                    {
+                        self = "../dictionary"
+                    }
+                };
+
+                return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while retrieving forms.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while retrieving forms.",
+                    details = ex.Message
+                });
+            }
+        }
+
+        // POST: api/forms
+        [HttpPost]
+        public async Task<ActionResult> CreateForm([FromBody] FormDto formDto)
+        {
+            try
+            {
+                if (formDto == null)
+                {
+                    return BadRequest(new
+                    {
+                        error = "Form data is null."
+                    });
+                }
+
+                var form = _mapper.Map<Form>(formDto);
+                _context.forms.Add(form);
+                await _context.SaveChangesAsync();
+
+                return StatusCode(201, formDto);
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while creating the form.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while creating the form.",
+                    details = ex.Message
+                });
+            }
+        }
+
+        // GET: forms/{formId}
+        [HttpGet("{formId}")]
+        public async Task<ActionResult> GetForm(Guid formId)
+        {
+            try
+            {
+                var form = await _context.forms
+                    .Include(f => f.Pages)
+                    .ThenInclude(p => p.FormFields)
+                    .FirstOrDefaultAsync(f => f.Id == formId);
+
+                if (form == null)
+                {
+                    return NotFound(new
+                    {
+                        error = "Form not found."
+                    });
+                }
+
+                var response = new
+                {
+                    data = new
+                    {
+                        type = "form",
+                        id = form.Id,
+                        name = form.Name,
+                        description = form.Description,
+                        pages = form.Pages.Select(p => new
+                        {
+                            p.Id,
+                            fields = p.FormFields.Select(ff => new
+                            {
+                                ff.Id,
+                                ff.Name,
+                                ff.Required,
+                                ff.Attributes,
+                                ff.Kind,
+                                ff.FieldType,
+                                ff.Rules
+                            })
+                        })
+                    }
+                };
+
+                var jsonResponse = JsonConvert.SerializeObject(response);
+                Response.ContentType = "application/vnd.api+json"; // Setting the correct Content-Type
+                return new ContentResult
+                {
+                    Content = jsonResponse,
+                    ContentType = "application/vnd.api+json",
+                    StatusCode = 200
+                };
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while retrieving the form.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while retrieving the form.",
+                    details = ex.Message
+                });
+            }
+        }
+
+        // DELETE: api/forms/{formId}
+        [HttpDelete("{formId}")]
+        public async Task<ActionResult> DeleteForm(Guid formId)
+        {
+            try
+            {
+                var form = await _context.forms.FindAsync(formId);
+                if (form == null)
+                {
+                    return NotFound(new
+                    {
+                        error = "Form not found."
+                    });
+                }
+
+                _context.forms.Remove(form);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while deleting the form.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while deleting the form.",
+                    details = ex.Message
+                });
+            }
+        }
+
+        // PUT: api/forms/{formId}
+        [HttpPut("{formId}")]
+        public async Task<ActionResult> ReplaceForm(Guid formId, [FromBody] FormDto formDto)
+        {
+            try
+            {
+                if (formDto == null || formId != formDto.Id)
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid form data."
+                    });
+                }
+
+                var form = _mapper.Map<Form>(formDto);
+                form.Id = formId; // Ensure the ID is set
+
+                _context.Entry(form).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while replacing the form.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while replacing the form.",
+                    details = ex.Message
+                });
+            }
+        }
+
+        // GET: forms/fields
+        [HttpGet("fields")]
+        public async Task<ActionResult> GetFormFields()
+        {
+            try
+            {
+                var formFields = await _context.formfields.Select(ff => new
+                {
+                    name = ff.Name,
+                    id = ff.Id,
+                    required = ff.Required,
+                    attributes = ff.Attributes,
+                    kind = ff.Kind,
+                    fieldType = ff.FieldType,
+                    rules = ff.Rules
+                }).ToListAsync();
+
+                var response = new
+                {
+                    data = formFields,
+                    type = "formField",
+                    links = new
+                    {
+                        self = "/form/formFields"
+                    }
+                };
+
+                return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while retrieving form fields.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while retrieving form fields.",
+                    details = ex.Message
+                });
+            }
+        }
+    }
+}
+*/
+
+
+
+
+
+
+
+
+
+
+/*
+ * BEFORE DTOS
+using FormAPI.Context;
+using FormAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace FormAPI.Controllers
+{
+    //[Route("api/[controller]")]
+    [Route("[controller]")]
+    [ApiController]
+    public class FormsController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+
+        public FormsController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET: api/forms
+        [HttpGet]
+        public async Task<ActionResult> ListForms()
+        {
+            try
+            {
+                var forms = await _context.forms.Select(f => new
+                {
+                    type = "form",
+                    id = f.Id,
+                    name = f.Name,
+                    description = f.Description,
+                    pages = f.Pages.Select(p => new
+                    {
+                        fields = p.FormFields.Select(field => new
+                        {
+                            name = field.Name,
+                            id = field.Id,
+                            required = field.Required,
+                            attributes = field.Attributes,
+                            kind = field.Kind,
+                            fieldType = field.FieldType,
+                            rules = field.Rules
+                        })
+                    })
+                }).ToListAsync();
+
+                var response = new
+                {
+                    data = forms,
+                    links = new
+                    {
+                        self = "../dictionary"
+                    }
+                };
+
+                //return Ok(response);
+                return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
+            }
+            catch (DbUpdateException ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "A database error occurred while retrieving forms.",
+                    details = ex.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while retrieving forms.",
+                    details = ex.Message
+                });
+            }
+        }
+
+
+
+        /*
+         [HttpGet]
+        public async Task<ActionResult<IEnumerable<Form>>> GetForms()
+        {
+            try
+            {
+                var forms = await _context.Forms.ToListAsync();
+                return Ok(forms);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+          
+         */
+
+/*
+
+// POST: api/forms
+[HttpPost]
+public async Task<ActionResult> CreateForm([FromBody] Form form)
+{
+try
+{
+if (form == null)
+{
+return BadRequest(new
+{
+error = "Form data is null."
+});
+}
+
+_context.forms.Add(form);
+await _context.SaveChangesAsync();
+
+return StatusCode(201, form);
+}
+catch (DbUpdateException ex)
+{
+return StatusCode(500, new
+{
+error = "A database error occurred while creating the form.",
+details = ex.Message
+});
+}
+catch (Exception ex)
+{
+return StatusCode(500, new
+{
+error = "An unexpected error occurred while creating the form.",
+details = ex.Message
+});
+}
+}
+
+// GET: forms/{formId}
+[HttpGet("{formId}")]
+public async Task<ActionResult> GetForm(Guid formId)
+{
+try
+{
+var form = await _context.forms
+.Include(f => f.Pages)
+.ThenInclude(p => p.FormFields)
+.FirstOrDefaultAsync(f => f.Id == formId);
+
+if (form == null)
+{
+return NotFound(new
+{
+error = "Form not found."
+});
+}
+/*
+var response = new
+{
+data = form,
+type = "form"
+};
+*/
+/*
+
+// Structure the response to match expected JSON schema
+var response = new
+{
+data = new
+{
+type = "form",
+id = form.Id,
+name = form.Name,
+description = form.Description,
+pages = form.Pages.Select(p => new
+{
+p.Id,
+fields = p.FormFields.Select(ff => new
+{
+ff.Id,
+ff.Name,
+ff.Required,
+ff.Attributes,
+ff.Kind,
+ff.FieldType,
+ff.Rules
+})
+})
+}
+};
+
+var jsonResponse = JsonConvert.SerializeObject(response);
+Response.ContentType = "application/vnd.api+json"; // Setting the correct Content-Type
+return new ContentResult
+{
+Content = jsonResponse,
+ContentType = "application/vnd.api+json",
+StatusCode = 200
+};
+
+// return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
+}
+catch (DbUpdateException ex)
+{
+return StatusCode(500, new
+{
+error = "A database error occurred while retrieving the form.",
+details = ex.Message
+});
+}
+catch (Exception ex)
+{
+return StatusCode(500, new
+{
+error = "An unexpected error occurred while retrieving the form.",
+details = ex.Message
+});
+}
+}
+
+// DELETE: api/forms/{formId}
+[HttpDelete("{formId}")]
+public async Task<ActionResult> DeleteForm(Guid formId)
+{
+try
+{
+var form = await _context.forms.FindAsync(formId);
+if (form == null)
+{
+return NotFound(new
+{
+error = "Form not found."
+});
+}
+
+_context.forms.Remove(form);
+await _context.SaveChangesAsync();
+
+return NoContent();
+}
+catch (DbUpdateException ex)
+{
+return StatusCode(500, new
+{
+error = "A database error occurred while deleting the form.",
+details = ex.Message
+});
+}
+catch (Exception ex)
+{
+return StatusCode(500, new
+{
+error = "An unexpected error occurred while deleting the form.",
+details = ex.Message
+});
+}
+}
+
+// PUT: api/forms/{formId}
+[HttpPut("{formId}")]
+public async Task<ActionResult> ReplaceForm(Guid formId, [FromBody] Form form)
+{
+try
+{
+if (form == null || formId != form.Id)
+{
+return BadRequest(new
+{
+error = "Invalid form data."
+});
+}
+
+_context.Entry(form).State = EntityState.Modified;
+
+await _context.SaveChangesAsync();
+
+return NoContent();
+}
+catch (DbUpdateException ex)
+{
+return StatusCode(500, new
+{
+error = "A database error occurred while replacing the form.",
+details = ex.Message
+});
+}
+catch (Exception ex)
+{
+return StatusCode(500, new
+{
+error = "An unexpected error occurred while replacing the form.",
+details = ex.Message
+});
+}
+}
+[HttpGet("fields")]
+public async Task<ActionResult> GetFormFields()
+{
+try
+{
+var formFields = await _context.formfields.Select(ff => new
+{
+name = ff.Name,
+id = ff.Id,
+required = ff.Required,
+attributes = ff.Attributes,
+kind = ff.Kind,
+fieldType = ff.FieldType,
+rules = ff.Rules,
+//translationString = ff.TranslationString,
+//translations = ff.Translations,
+// options = ff.Options,
+// subFormId = ff.SubFormId
+}).ToListAsync();
+
+var response = new
+{
+data = formFields,
+type = "formField",
+links = new
+{
+self = "/form/formFields"
+}
+};
+
+//return Ok(response);
+return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
+}
+catch (DbUpdateException ex)
+{
+// Log the error (uncomment ex variable name and write a log.)
+return StatusCode(500, new
+{
+error = "A database error occurred while retrieving form fields.",
+details = ex.Message
+});
+}
+catch (Exception ex)
+{
+// Log the error (uncomment ex variable name and write a log.)
+return StatusCode(500, new
+{
+error = "An unexpected error occurred while retrieving form fields.",
+details = ex.Message
+});
+}
+}
+
+/*[HttpGet("fields")]
+public async Task<ActionResult<IEnumerable<FormField>>> GetFormFields()
+{
+try
+{
+var formFields = await _context.FormFields.ToListAsync();
+return Ok(new
+{
+data = formFields,
+type = "formField",
+links = new { self = "/form/formFields" }
+});
+}
+catch (Exception ex)
+{
+return StatusCode(500, new { error = ex.Message });
+}
+} */
+/*
+}
+}
+
+*/
+
+
+
+
+
+
+
+
+
+
+/*
+
+using FormAPI.Context;
+using FormAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+
+namespace FormAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class FormsController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+
+        public FormsController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Form>> CreateForm(Form form)
+        {
+            if (form == null)
+            {
+                return BadRequest(new { errors = new[] { new { status = "400", title = "Bad Request", detail = "Form is null" } } });
+            }
+
+            try
+            {
+                form.Id = Guid.NewGuid(); // Ensure the ID is set to a new UUID
+                _context.forms.Add(form);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetFormById), new { id = form.Id }, form);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating form: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, new { errors = new[] { new { status = "500", title = "Internal Server Error", detail = "Unexpected error occurred." } } });
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Form>>> GetForms()
+        {
+            var forms = await _context.forms.ToListAsync();
+            return Ok(forms);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Form>> GetFormById(Guid id)
+        {
+            var form = await _context.forms.FindAsync(id);
+            if (form == null)
+            {
+                return NotFound(new { errors = new[] { new { status = "404", title = "Not Found", detail = "Form not found." } } });
+            }
+
+            return Ok(form);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Form>> UpdateForm(Guid id, Form form)
+        {
+            if (form == null)
+            {
+                return BadRequest(new { errors = new[] { new { status = "400", title = "Bad Request", detail = "Form is null" } } });
+            }
+
+            var existingForm = await _context.forms.FindAsync(id);
+            if (existingForm == null)
+            {
+                return NotFound(new { errors = new[] { new { status = "404", title = "Not Found", detail = "Form not found." } } });
+            }
+
+            existingForm.Name = form.Name; // Update properties as needed
+
+            _context.forms.Update(existingForm);
+            await _context.SaveChangesAsync();
+
+            return Ok(existingForm);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteForm(Guid id)
+        {
+            var form = await _context.forms.FindAsync(id);
+            if (form == null)
+            {
+                return NotFound(new { errors = new[] { new { status = "404", title = "Not Found", detail = "Form not found." } } });
+            }
+
+            try
+            {
+                _context.forms.Remove(form);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting form: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, new { errors = new[] { new { status = "500", title = "Internal Server Error", detail = "Unexpected error occurred." } } });
+            }
+        }
+    }
+}
+
+*/
+
+
+
+
+
+
+/*
+using FormAPI.Context;
+using FormAPI.DTOs;
+using FormAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using System;
+
+namespace FormAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class FormsController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+
+        public FormsController(ApplicationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<FormDto>> CreateForm(FormDto formDto)
+        {
+            if (formDto == null)
+            {
+                return BadRequest(new { errors = new[] { new { status = "400", title = "Bad Request", detail = "Form DTO is null" } } });
+            }
+
+            try
+            {
+                var form = _mapper.Map<Form>(formDto);
+                _context.forms.Add(form);
+                await _context.SaveChangesAsync();
+                var createdFormDto = _mapper.Map<FormDto>(form);
+
+                return CreatedAtAction(nameof(GetFormById), new { id = form.Id }, createdFormDto);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging (optional)
+                Console.WriteLine($"Error creating form: {ex.Message}");
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new { errors = new[] { new { status = "500", title = "Internal Server Error", detail = "Unexpected error occurred." } } });
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<FormDto>>> GetForms()
+        {
+            var forms = await _context.forms.ToListAsync();
+            var formDtos = _mapper.Map<List<FormDto>>(forms);
+
+            return Ok(formDtos);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<FormDto>> GetFormById(int id)
+        {
+            var form = await _context.forms.FindAsync(id);
+            if (form == null)
+            {
+                return NotFound(new { errors = new[] { new { status = "404", title = "Not Found", detail = "Form not found." } } });
+            }
+
+            var formDto = _mapper.Map<FormDto>(form);
+            return Ok(formDto);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<FormDto>> UpdateForm(int id, FormDto formDto)
+        {
+            if (formDto == null)
+            {
+                return BadRequest(new { errors = new[] { new { status = "400", title = "Bad Request", detail = "Form DTO is null" } } });
+            }
+
+            var form = await _context.forms.FindAsync(id);
+            if (form == null)
+            {
+                return NotFound(new { errors = new[] { new { status = "404", title = "Not Found", detail = "Form not found." } } });
+            }
+
+            _mapper.Map(formDto, form);
+            _context.forms.Update(form);
+            await _context.SaveChangesAsync();
+            var updatedFormDto = _mapper.Map<FormDto>(form);
+
+            return Ok(updatedFormDto);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteForm(int id)
+        {
+            var form = await _context.forms.FindAsync(id);
+            if (form == null)
+            {
+                return NotFound(new { errors = new[] { new { status = "404", title = "Not Found", detail = "Form not found." } } });
+            }
+
+            try
+            {
+                _context.forms.Remove(form);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging (optional)
+                Console.WriteLine($"Error deleting form: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, new { errors = new[] { new { status = "500", title = "Internal Server Error", detail = "Unexpected error occurred." } } });
+            }
+        }
+    }
+}
+
+*/
+
+
+
+
+
+
+/* without all error handlers
+ * using FormAPI.Context;
+using FormAPI.DTOs;
+using FormAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+
+
+namespace FormAPI.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class FormsController : ControllerBase
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+
+        public FormsController(ApplicationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<FormDto>> CreateForm(FormDto formDto)
+        {
+            if (formDto == null)
+            {
+                return BadRequest("Form DTO is null");
+            }
+
+            //formDto.Id = Guid.NewGuid().ToString(); // Generate a new GUID and convert it to string
+            try
+            {
+                var form = _mapper.Map<Form>(formDto);
+                _context.forms.Add(form);
+                await _context.SaveChangesAsync();
+                var createdFormDto = _mapper.Map<FormDto>(form);
+
+                return CreatedAtAction(nameof(GetFormById), new { id = form.Id }, createdFormDto);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging (optional)
+                Console.WriteLine($"Error creating form: {ex.Message}");
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Error = "Unexpected error occurred." }); // Unexpected error response
+            }
+
+
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<FormDto>>> GetForms()
+        {
+            var forms = await _context.forms.ToListAsync();
+            var formDtos = _mapper.Map<List<FormDto>>(forms);
+
+            return Ok(formDtos);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<FormDto>> GetFormById(int id)
+        {
+            var form = await _context.forms.FindAsync(id);
+            if (form == null)
+            {
+                return NotFound("Form not found.");
+            }
+
+            var formDto = _mapper.Map<FormDto>(form);
+            return Ok(formDto);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<FormDto>> UpdateForm(int id, FormDto formDto)
+        {
+            if (formDto == null)
+            {
+                return BadRequest("Form DTO is null");
+            }
+
+            var form = await _context.forms.FindAsync(id);
+            if (form == null)
+            {
+                return NotFound("Form not found.");
+            }
+
+            _mapper.Map(formDto, form);
+            _context.forms.Update(form);
+            await _context.SaveChangesAsync();
+            var updatedFormDto = _mapper.Map<FormDto>(form);
+
+            return Ok(updatedFormDto);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteForm(int id)
+        {
+            var form = await _context.forms.FindAsync(id);
+            if (form == null)
+            {
+                return NotFound("Form not found."); // Existing response for not found form
+            }
+
+            try
+            {
+                _context.forms.Remove(form);
+                await _context.SaveChangesAsync();
+
+                return NoContent(); // 204 No Content response for successful deletion
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging (optional)
+                Console.WriteLine($"Error deleting form: {ex.Message}");
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Error = "Unexpected error occurred." }); // Unexpected error response
+            }
+
+            
+        }
+
+
+        /* [HttpDelete("{id}")]
+         public async Task<ActionResult> DeleteForm(int id)
+         {
+             var form = await _context.forms.FindAsync(id);
+             if (form == null)
+             {
+                 return NotFound("Form not found.");
+             }
+
+             _context.forms.Remove(form);
+             await _context.SaveChangesAsync();
+
+             return NoContent();
+         }
+         
+    }
+}
+*/
+
+
+
+
+
+/*
+ * for all endpoints
+using AutoMapper;
+using FormAPI.Context;
+using FormAPI.DTOs;
+using FormAPI.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -366,7 +1951,7 @@ namespace FormAPI.Controllers
     }
 }
 
-
+*/
 
 
 
