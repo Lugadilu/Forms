@@ -25,7 +25,7 @@ namespace FormAPI.Controllers
             _mapper = mapper;
         }
 
-
+        
         // GET: /forms
         [HttpGet]
         public async Task<ActionResult> ListForms()
@@ -65,16 +65,18 @@ namespace FormAPI.Controllers
                         formRecords = f.FormRecords.Select(record => new
                         {
                             id = record.Id,
-                            formFieldValues = record.FormFieldValues
+                            //formFieldValues = record.FormFieldValues
+                            // Deserialize the FormFieldValues string into a Dictionary
+                            formFieldValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(record.FormFieldValues)
                         }).ToList()
                         
                     }).ToList(),
-                    /*
+                    
                     links = new
                     {
                         self = "../dictionary"
                     }
-                    */
+                    
                 };
 
                 return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
@@ -96,7 +98,7 @@ namespace FormAPI.Controllers
                 });
             }
         }
-
+        
 
 
         
@@ -105,11 +107,17 @@ namespace FormAPI.Controllers
         {
             try
             {
-                if (formDto == null)
+                if (formDto == null || !ModelState.IsValid)
                 {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToArray();
+
                     return BadRequest(new
                     {
-                        error = "The formDto field is required."
+                        error = "Invalid form submission.",
+                        details = errors
                     });
                 }
 
@@ -221,14 +229,17 @@ namespace FormAPI.Controllers
                         formRecords = formDto.FormRecords.Select(record => new
                         {
                             id = record.Id,
-                            formFieldValues = record.FormFieldValues
+                            //formFieldValues = record.FormFieldValues
+                            // Deserialize the FormFieldValues string into a Dictionary
+                            formFieldValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(record.FormFieldValues)
                         }).ToList()
                     }
                 };
 
                 var jsonResponse = JsonConvert.SerializeObject(response);
                 Console.WriteLine(jsonResponse); // Log the JSON response
-
+                return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
+                /*
                 var result = new ObjectResult(response)
                 {
                     StatusCode = 200
@@ -237,6 +248,7 @@ namespace FormAPI.Controllers
                 result.ContentTypes.Add("application/vnd+json");
 
                 return result;
+                */
             }
             catch (DbUpdateException ex)
             {
@@ -304,6 +316,16 @@ namespace FormAPI.Controllers
         {
             try
             {
+
+                // Check if the formDto is null
+                if (formDto == null)
+                {
+                    return BadRequest(new
+                    {
+                        error = "The formDto field is required."
+                    });
+                }
+
                 var existingForm = await _context.forms
                     .Include(f => f.Pages)
                     .ThenInclude(p => p.FormFields)

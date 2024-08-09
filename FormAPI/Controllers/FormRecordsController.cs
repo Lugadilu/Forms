@@ -95,7 +95,91 @@ namespace FormAPI.Controllers
 
 
 
-        
+        // POST: forms/{formId}/records
+        [HttpPost]
+        public async Task<ActionResult> CreateFormRecord(Guid formId, [FromBody] Dictionary<string, string> formFieldValues)
+        {
+            try
+            {
+                if (formFieldValues == null || !formFieldValues.Any())
+                {
+                    return BadRequest(new
+                    {
+                        error = "Form field values are required."
+                    });
+                }
+
+                // Retrieve the form definition
+                var form = await _context.forms
+                    .Include(f => f.Pages)
+                        .ThenInclude(p => p.FormFields)
+                    .FirstOrDefaultAsync(f => f.Id == formId);
+
+                if (form == null)
+                {
+                    return NotFound(new
+                    {
+                        error = "Form not found."
+                    });
+                }
+
+                // Extract the allowed fields from the form definition
+                var allowedFields = form.Pages
+                    .SelectMany(p => p.FormFields)
+                    .Select(ff => ff.Name)
+                    .ToList();
+
+                // Validate the provided fields against the allowed fields
+                var invalidFields = formFieldValues.Keys.Except(allowedFields).ToList();
+                if (invalidFields.Any())
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid fields provided.",
+                        invalidFields
+                    });
+                }
+
+                // Create a new FormRecord entity
+                var formRecord = new FormRecord
+                {
+                    Id = Guid.NewGuid(),
+                    FormId = formId,
+                    FormFieldValues = JsonConvert.SerializeObject(formFieldValues),
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                // Add the form record to the context
+                _context.formrecords.Add(formRecord);
+                await _context.SaveChangesAsync();
+
+                // Return the response
+                var response = new
+                {
+                    data = new
+                    {
+                        type = "formRecord",
+                        id = formRecord.Id,
+                        formId = formRecord.FormId,
+                        formFieldValues = formFieldValues,
+                        createdAt = formRecord.CreatedAt
+                    }
+                };
+
+                return StatusCode(201, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while creating the form record.",
+                    details = ex.Message
+                });
+            }
+        }
+
+
+        /*
         // POST: forms/{formId}/records
         [HttpPost]
         public async Task<ActionResult> CreateFormRecord(Guid formId, FormRecordDto formRecordDto)
@@ -130,7 +214,7 @@ namespace FormAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new { errors = new[] { new { status = "500", title = "Internal Server Error", detail = "Unexpected error occurred." } } });
             }
         }
-        
+        */
 
 
         // GET: forms/{formId}/records/{recordId}

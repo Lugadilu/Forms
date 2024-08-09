@@ -376,8 +376,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseStatusCodePages();
+
 // Use the ExceptionMiddleware
 app.UseMiddleware<ExceptionMiddleware>();
+
+/*
+if (app.Environment.IsDevelopment()) //in development environment
+{
+    app.UseExceptionHandler("/error-development");
+}
+else
+{
+    app.UseExceptionHandler("/error");    //in non-development environment
+}
+*/
 
 // Use the ContentTypeMiddleware
 app.UseMiddleware<ContentTypeMiddleware>();
@@ -390,6 +403,8 @@ app.Use(async (context, next) =>
     await next.Invoke();
     logger.LogInformation("Finished handling request.");
 });
+
+
 
 app.UseAuthorization();
 
