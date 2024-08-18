@@ -4,6 +4,7 @@ using FormAPI.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Newtonsoft.Json;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -131,6 +132,15 @@ namespace FormAPI.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    /*
+                    // Apply conversion for FormFieldValues
+                    b.Property<Dictionary<string, string>>("FormFieldValues")
+                        .IsRequired()
+                        .HasColumnType("jsonb") // Or "text" if you want to store as a JSON string
+                        .HasConversion(
+                            v => JsonConvert.SerializeObject(v), // Convert dictionary to JSON string for storage
+                            v => JsonConvert.DeserializeObject<Dictionary<string, string>>(v)); // Convert JSON string back to dictionary
+                    */
                     b.Property<Guid>("FormId")
                         .HasColumnType("uuid");
 

@@ -6,11 +6,11 @@ namespace FormAPI.DTOs
 {
     public class PageDto
     {
-       // [JsonIgnore]
+        [JsonIgnore]
         public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Each page must have a form ID.")]
-      
+        [JsonIgnore]
         public Guid FormId { get; set; }
 
         // [JsonIgnore]

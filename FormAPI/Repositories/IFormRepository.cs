@@ -4,7 +4,28 @@ namespace FormAPI.Repositories
 {
     public interface IFormRepository
     {
+        Task<IEnumerable<Form>> GetAllFormsAsync();
+        Task<Form> GetFormByIdAsync(Guid formId);
+        Task AddFormAsync(Form form);
+        Task UpdateFormAsync(Form form);
+        Task DeleteFormAsync(Form form);
 
+        Task<IEnumerable<FormField>> GetAllFormFieldsAsync();
+
+        Task<IEnumerable<FormRecord>> GetAllFormRecordsAsync();
+        Task<FormRecord> GetFormRecordByIdAsync(Guid formId, Guid recordId);
+
+        
+
+        Task<FormRecord> GetFormRecordByFormIdAsync(Guid formId);
+
+
+        Task AddFormRecordAsync(FormRecord formRecord);
+        Task UpdateFormRecordAsync(FormRecord formRecord);
+        Task DeleteFormRecordAsync(FormRecord formRecord);
+        Task<IEnumerable<FormField>> GetFormFieldsByFormIdAsync(Guid formId);
+        Task<Form> GetFormWithFieldsAsync(Guid formId);
+        /*
         Task<IEnumerable<Form>> GetAllFormsAsync();
         Task<Form> GetFormByIdAsync(Guid id);
         Task<Form> CreateFormAsync(Form form);
@@ -25,30 +46,9 @@ namespace FormAPI.Repositories
         Task<FormRecord> CreateFormRecordForFormAsync(Guid formId, FormRecord formRecord);
         Task<FormRecord> UpdateFormRecordForFormAsync(Guid formId, FormRecord formRecord);
         Task<bool> DeleteFormRecordForFormAsync(Guid formId, Guid recordId);
-
-
-        /*
-        Task<IEnumerable<Form>> GetAllFormsAsync();
-        Task<Form> GetFormByIdAsync(Guid id); // Changed parameter type to Guid
-        Task<Form> CreateFormAsync(Form form);
-        Task<Form> UpdateFormAsync(Form form);
-        Task DeleteFormAsync(Guid id); // Changed parameter type to Guid
-
-        Task<IEnumerable<FormField>> GetAllFormFieldsAsync();
-        Task<FormField> CreateFormFieldAsync(FormField formField);
-        Task<bool> DeleteFormFieldAsync(Guid id); // Changed parameter type to Guid
-
-        Task<IEnumerable<FormRecord>> GetAllFormRecordsAsync();
-        Task<FormRecord> GetFormRecordByIdAsync(Guid id); // Changed parameter type to Guid
-        Task<FormRecord> CreateFormRecordAsync(FormRecord formRecord);
-        Task<FormRecord> UpdateFormRecordAsync(FormRecord formRecord);
-        Task<bool> DeleteFormRecordAsync(Guid id); // Changed parameter type to Guid
-
-        Task<IEnumerable<FormRecord>> GetFormRecordsByFormIdAsync(Guid formId); // Changed parameter type to Guid
-        Task<FormRecord> CreateFormRecordForFormAsync(Guid formId, FormRecord formRecord); // Changed parameter types to Guid
-        Task<FormRecord> UpdateFormRecordForFormAsync(Guid formId, FormRecord formRecord); // Changed parameter types to Guid
-        Task<bool> DeleteFormRecordForFormAsync(Guid formId, Guid recordId); // Changed parameter types to Guid
+        
         */
+
     }
 }
 

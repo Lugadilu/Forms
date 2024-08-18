@@ -34,20 +34,22 @@ namespace FormAPI
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             // Add the FormRepository and FormService as scoped services
-            services.AddScoped<IFormRepository, FormRepository>();
+          //  services.AddScoped<IFormRepository, FormRepository>();
             //services.AddScoped<FormService>();
             services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
             services.AddAutoMapper(typeof(Startup));
 
 
-            services.AddControllers()
+            services.AddControllers();
+
+            /*
          .AddJsonOptions(options =>
          {
              options.JsonSerializerOptions.IgnoreNullValues = true;
              options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
          });
-
+            */
 
 
 

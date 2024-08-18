@@ -22,13 +22,10 @@ namespace FormAPI.Models
         public string FieldType { get; set; } //Specifies the type of data expected for the form field (e.g., "text", "email", "checkbox").
                                               //public Dictionary<string, string> Rules { get; set; }//Defines validation rules or constraints specific to the form field (e.g., minimum/maximum length, regex pattern
         public string Rules { get; set; } //= new { };
-
-
-        //[JsonIgnore]
-        //public int FormId { get; set; }  // foreign key to the form entity
-        // public Guid FormId { get; set; }
-        //[JsonIgnore]
-        //public Form Form { get; set; }  // navigation property
+        /*
+        public Dictionary<string, object> Attributes { get; set; }
+        public Dictionary<string, object> Rules { get; set; }
+        */
         public Guid PageId { get; set; }
         public Page Page { get; set; }
     }

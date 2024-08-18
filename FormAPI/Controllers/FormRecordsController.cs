@@ -1,4 +1,300 @@
-﻿using FormAPI.Context;
+﻿using AutoMapper;
+using FormAPI.DTOs;
+using FormAPI.Models;
+using FormAPI.Repositories;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace FormAPI.Controllers
+{
+    [Route("[controller]")]
+    [ApiController]
+    public class FormRecordsController : ControllerBase
+    {
+        private readonly IFormRepository _formRepository;
+        private readonly IMapper _mapper;
+        
+
+        public FormRecordsController(IFormRepository formRepository, IMapper mapper)
+        {
+            _formRepository = formRepository;
+            _mapper = mapper;
+            
+       
+        }
+        [HttpGet("{formId}/records")]
+        public async Task<ActionResult> ListFormRecords(Guid formId)
+        {
+            try
+            {
+                var formRecords = await _formRepository.GetAllFormRecordsAsync();
+
+                var response = new
+                {
+                    data = formRecords
+                        .Where(r => r.FormId == formId)
+                        .Select(r =>
+                        {
+                            // Deserialize FormFieldValues into a dynamic object
+                            var formFieldValues = JsonConvert.DeserializeObject<Dictionary<string, object>>(r.FormFieldValues);
+
+                            // Construct the response object
+                            var record = new
+                            {
+                                type = "formRecord",
+                                id = r.Id,
+                                formId = r.FormId
+                            };
+
+                            // Merge the record with formFieldValues
+                            return new
+                            {
+                                data = record
+                                    .GetType()
+                                    .GetProperties()
+                                    .ToDictionary(prop => prop.Name, prop => prop.GetValue(record))
+                                    .Concat(formFieldValues)
+                                    .ToDictionary(kv => kv.Key, kv => kv.Value),
+                                links = new { self = "../dictionary" }
+                            };
+                        }),
+                    links = new { self = "/form/formRecords" }
+                };
+
+                return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while retrieving form records.",
+                    details = ex.Message
+                });
+            }
+        }
+
+
+
+        // GET: forms/{formId}/records/{recordId}
+        [HttpGet("{formId}/records/{recordId}")]
+        public async Task<ActionResult> GetFormRecord(Guid formId, Guid recordId)
+        {
+            try
+            {
+                var formRecord = await _formRepository.GetFormRecordByIdAsync(formId, recordId);
+
+                if (formRecord == null)
+                {
+                    return NotFound(new { error = "Form record not found." });
+                }
+
+                var response = new
+                {
+                    data = new
+                    {
+                        formRecord.Id,
+                        formRecord.FormId,
+                        formRecord.FormFieldValues
+                    },
+                    type = "formRecord"
+                };
+
+                return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while retrieving the form record.",
+                    details = ex.Message
+                });
+            }
+        }
+
+
+        
+        [HttpPost("{formId}/records")]
+        public async Task<ActionResult> CreateFormRecord(Guid formId, [FromBody] Dictionary<string, string> formFieldValues)
+        {
+            try
+            {
+                
+                if (formFieldValues == null || !formFieldValues.Any())
+                {
+                    return BadRequest(new
+                    {
+                        error = "Form field values are required."
+                    });
+                }
+                
+                // Retrieve the form definition using the repository
+                var form = await _formRepository.GetFormWithFieldsAsync(formId);
+
+                if (form == null)
+                {
+                    return NotFound(new
+                    {
+                        error = "Form not found."
+                    });
+                }
+
+                // Extract the allowed fields from the form definition
+                var allowedFields = form.Pages
+                    .SelectMany(p => p.FormFields)
+                    .Select(ff => ff.Name)
+                    .ToList();
+
+                // Validate the provided fields against the allowed fields
+                var invalidFields = formFieldValues.Keys.Except(allowedFields).ToList();
+                if (invalidFields.Any())
+                {
+                    return BadRequest(new
+                    {
+                        error = "Invalid fields provided.",
+                        invalidFields
+                    });
+                }
+
+                // Create a new FormRecord entity using AutoMapper
+                var formRecord = new FormRecord
+                {
+                    Id = Guid.NewGuid(),
+                    FormId = formId,
+                    FormFieldValues = JsonConvert.SerializeObject(formFieldValues),
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                // Use the repository to add the form record
+                await _formRepository.AddFormRecordAsync(formRecord);
+
+                // Return the response
+                var response = new
+                {
+                    data = new
+                    {
+                        type = "formRecord",
+                        id = formRecord.Id,
+                        formId = formRecord.FormId,
+                        formFieldValues = formFieldValues,
+                        createdAt = formRecord.CreatedAt
+                    }
+                };
+
+                return StatusCode(201, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while creating the form record.",
+                    details = ex.Message
+                });
+            }
+        }
+        
+
+        // DELETE: forms/{formId}/records/{recordId}
+        [HttpDelete("{formId}/records/{recordId}")]
+        public async Task<ActionResult> DeleteFormRecord(Guid formId, Guid recordId)
+        {
+            try
+            {
+                var formRecord = await _formRepository.GetFormRecordByIdAsync(formId, recordId);
+
+                if (formRecord == null)
+                {
+                    return NotFound(new { error = "Form record not found." });
+                }
+
+                await _formRepository.DeleteFormRecordAsync(formRecord);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    error = "An unexpected error occurred while deleting the form record.",
+                    details = ex.Message
+                });
+            }
+        }
+
+        [HttpPut("FormRecords/{formId}/records/{recordId}")]
+        //[HttpPut("{formId}/records/{recordId}")]
+        public async Task<ActionResult> UpdateFormRecord(Guid formId, Guid recordId, [FromBody] Dictionary<string, string> formFieldValues)
+        {
+            try
+            {
+                // Validate the input
+                if (formFieldValues == null || !formFieldValues.Any())
+                {
+                    return BadRequest(new { error = "Form field values are required." });
+                }
+
+                // Retrieve the form record by recordId and formId
+                var formRecord = await _formRepository.GetFormRecordByIdAsync(formId, recordId); //recordId, formId
+                if (formRecord == null)
+                {
+                    return NotFound(new { error = "Form record not found." });
+                }
+
+                // Retrieve the form definition
+                var form = await _formRepository.GetFormWithFieldsAsync(formId);
+                if (form == null)
+                {
+                    return NotFound(new { error = "Form not found." });
+                }
+
+                // Validate the provided fields against the allowed fields
+                var allowedFields = form.Pages.SelectMany(p => p.FormFields).Select(ff => ff.Name).ToList();
+                var invalidFields = formFieldValues.Keys.Except(allowedFields).ToList();
+                if (invalidFields.Any())
+                {
+                    return BadRequest(new { error = "Invalid fields provided.", invalidFields });
+                }
+
+                // Update the form record's field values
+                formRecord.FormFieldValues = JsonConvert.SerializeObject(formFieldValues);
+
+                // Save the updated form record using the repository
+                await _formRepository.UpdateFormRecordAsync(formRecord);
+
+                // Return the updated form record as a response
+                var response = new
+                {
+                    data = new
+                    {
+                        type = "formRecord",
+                        id = formRecord.Id,
+                        formId = formRecord.FormId,
+                        formFieldValues = formFieldValues,
+                    }
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "An unexpected error occurred while updating the form record.", details = ex.Message });
+            }
+        }
+
+       
+    }
+}
+
+
+
+
+
+
+
+/*
+using FormAPI.Context;
 using FormAPI.DTOs;
 using FormAPI.Models;
 using AutoMapper;
@@ -179,43 +475,7 @@ namespace FormAPI.Controllers
         }
 
 
-        /*
-        // POST: forms/{formId}/records
-        [HttpPost]
-        public async Task<ActionResult> CreateFormRecord(Guid formId, FormRecordDto formRecordDto)
-        {
-            if (formRecordDto == null)
-            {
-                return BadRequest(new { errors = new[] { new { status = "400", title = "Bad Request", detail = "Form record is null" } } });
-            }
-
-            try
-            {
-                var formRecord = _mapper.Map<FormRecord>(formRecordDto);
-                formRecord.Id = Guid.NewGuid();
-                formRecord.FormId = formId;
-                _context.formrecords.Add(formRecord);
-                await _context.SaveChangesAsync();
-
-                var response = new
-                {
-                    type = "formRecord",
-                    id = formRecord.Id,
-                    formId = formRecord.FormId,
-                    formFieldValues = formRecord.FormFieldValues,
-                    createdAt = formRecord.CreatedAt
-                };
-
-                return CreatedAtAction(nameof(GetFormRecordById), new { formId = formId, recordId = formRecord.Id }, response);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error creating form record: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, new { errors = new[] { new { status = "500", title = "Internal Server Error", detail = "Unexpected error occurred." } } });
-            }
-        }
-        */
-
+        
 
         // GET: forms/{formId}/records/{recordId}
         [HttpGet("{recordId}")]
@@ -334,8 +594,7 @@ namespace FormAPI.Controllers
     }
 }
 
-
-
+*/
 
 
 

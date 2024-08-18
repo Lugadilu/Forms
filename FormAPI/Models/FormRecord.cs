@@ -1,6 +1,7 @@
 ﻿
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace FormAPI.Models
@@ -14,7 +15,9 @@ namespace FormAPI.Models
         public Form Form { get; set; } // Navigation property
 
         // JSON string to store form field values
-        public string FormFieldValues { get; set; } = "{}"; // Default to empty JSON object
+        public string FormFieldValues { get; set; } = "{}"; //stores a JSON string
+        // Dictionary to store form field values
+        //public Dictionary<string, string> FormFieldValues { get; set; } = new Dictionary<string, string>();
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

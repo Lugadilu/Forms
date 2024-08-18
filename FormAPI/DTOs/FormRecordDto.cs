@@ -6,7 +6,8 @@ namespace FormAPI.DTOs
     {
         public Guid Id { get; set; }
         public Guid FormId { get; set; }
-        public string FormFieldValues { get; set; }
+        // public string FormFieldValues { get; set; }
+        public Dictionary<string, string> FormFieldValues { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

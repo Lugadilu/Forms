@@ -1,4 +1,119 @@
-﻿using System;
+﻿using FormAPI.Context;
+using FormAPI.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace FormAPI.Repositories
+{
+    public class FormRepository : IFormRepository
+    {
+        private readonly ApplicationDbContext _context;
+
+        public FormRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Form>> GetAllFormsAsync()
+        {
+            return await _context.forms
+                .Include(f => f.Pages)
+                .ThenInclude(p => p.FormFields)
+                .ToListAsync();
+        }
+
+        public async Task<Form> GetFormByIdAsync(Guid formId)
+        {
+            return await _context.forms
+                .Include(f => f.Pages)
+                .ThenInclude(p => p.FormFields)
+                .FirstOrDefaultAsync(f => f.Id == formId);
+        }
+
+        public async Task AddFormAsync(Form form)
+        {
+            _context.forms.Add(form);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateFormAsync(Form form)
+        {
+            _context.Entry(form).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteFormAsync(Form form)
+        {
+            _context.forms.Remove(form);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<FormField>> GetAllFormFieldsAsync()
+        {
+            return await _context.formfields.ToListAsync();
+        }
+
+        public async Task<IEnumerable<FormRecord>> GetAllFormRecordsAsync()
+        {
+            return await _context.formrecords.ToListAsync();
+        }
+        
+        public async Task<FormRecord> GetFormRecordByIdAsync(Guid formId, Guid recordId)
+        {
+            return await _context.formrecords
+                .FirstOrDefaultAsync(fr => fr.FormId == formId && fr.Id == recordId);
+        }
+        
+        
+        public async Task<FormRecord> GetFormRecordByFormIdAsync(Guid formId)
+        {
+            return await _context.formrecords
+                .FirstOrDefaultAsync(fr => fr.FormId == formId);
+        }
+        
+
+        public async Task AddFormRecordAsync(FormRecord formRecord)
+        {
+            _context.formrecords.Add(formRecord);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateFormRecordAsync(FormRecord formRecord)
+        {
+            _context.Entry(formRecord).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteFormRecordAsync(FormRecord formRecord)
+        {
+            _context.formrecords.Remove(formRecord);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<FormField>> GetFormFieldsByFormIdAsync(Guid formId)
+        {
+            return await _context.formfields
+                                 .Where(f => f.PageId == formId)
+                                 .ToListAsync();
+        }
+        public async Task<Form> GetFormWithFieldsAsync(Guid formId)
+        {
+            return await _context.forms
+                .Include(f => f.Pages)
+                    .ThenInclude(p => p.FormFields)
+                .FirstOrDefaultAsync(f => f.Id == formId);
+        }
+    }
+}
+
+
+
+
+/*
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -348,7 +463,7 @@ namespace FormAPI.Repositories
     }
 }
 
-
+*/
 
 
 

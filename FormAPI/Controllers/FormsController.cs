@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using FormAPI.Context;
 using FormAPI.DTOs;
 using FormAPI.Models;
+using FormAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace FormAPI.Controllers
 {
@@ -16,33 +16,25 @@ namespace FormAPI.Controllers
     [ApiController]
     public class FormsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IFormRepository _formRepository;
         private readonly IMapper _mapper;
 
-        public FormsController(ApplicationDbContext context, IMapper mapper)
+        public FormsController(IFormRepository formRepository, IMapper mapper)
         {
-            _context = context;
+            _formRepository = formRepository;
             _mapper = mapper;
         }
 
-        
-        // GET: /forms
+        // GET: api/forms
         [HttpGet]
         public async Task<ActionResult> ListForms()
         {
             try
             {
-                var forms = await _context.forms
-                    .Include(f => f.Pages)
-                    .ThenInclude(p => p.FormFields)
-                    .Include(f => f.FormRecords)
-                    .ToListAsync();
-
-                var formDtos = forms.Select(f => _mapper.Map<FormDto>(f)).ToList();
-
+                var forms = await _formRepository.GetAllFormsAsync();
                 var response = new
                 {
-                    data = formDtos.Select(f => new
+                    data = forms.Select(f => new
                     {
                         type = "form",
                         id = f.Id,
@@ -50,7 +42,7 @@ namespace FormAPI.Controllers
                         description = f.Description,
                         pages = f.Pages.Select(p => new
                         {
-                            fields = p.Fields.Select(field => new
+                            fields = p.FormFields.Select(field => new
                             {
                                 name = field.Name,
                                 id = field.Id,
@@ -59,35 +51,13 @@ namespace FormAPI.Controllers
                                 kind = field.Kind,
                                 fieldType = field.FieldType,
                                 rules = field.Rules
-                            }).ToList()
-                        }).ToList(),
-
-                        formRecords = f.FormRecords.Select(record => new
-                        {
-                            id = record.Id,
-                            //formFieldValues = record.FormFieldValues
-                            // Deserialize the FormFieldValues string into a Dictionary
-                            formFieldValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(record.FormFieldValues)
-                        }).ToList()
-                        
-                    }).ToList(),
-                    
-                    links = new
-                    {
-                        self = "../dictionary"
-                    }
-                    
+                            })
+                        })
+                    }),
+                    links = new { self = "../dictionary" }
                 };
 
                 return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(500, new
-                {
-                    error = "A database error occurred while retrieving forms.",
-                    details = ex.Message
-                });
             }
             catch (Exception ex)
             {
@@ -98,76 +68,58 @@ namespace FormAPI.Controllers
                 });
             }
         }
-        
 
-
-        
+        // POST: api/forms
         [HttpPost]
         public async Task<ActionResult> CreateForm([FromBody] FormDto formDto)
         {
             try
             {
-                if (formDto == null || !ModelState.IsValid)
+                if (formDto == null)
                 {
-                    var errors = ModelState.Values
-                        .SelectMany(v => v.Errors)
-                        .Select(e => e.ErrorMessage)
-                        .ToArray();
-
-                    return BadRequest(new
-                    {
-                        error = "Invalid form submission.",
-                        details = errors
-                    });
+                    return BadRequest(new { error = "Form data is null." });
                 }
 
-                // Map the formDto to Form entity
                 var form = _mapper.Map<Form>(formDto);
+                await _formRepository.AddFormAsync(form);
 
-                // Add the form to the context
-                _context.forms.Add(form);
-                await _context.SaveChangesAsync();
+                // Map back to DTO if needed (for return data)
+                var createdFormDto = _mapper.Map<FormDto>(form);
 
-                // Create a response object
+                // Construct the response format
                 var response = new
                 {
-                    data = new
+                    data = new[]
+           {
+                new
+                {
+                    type = "form",
+                    id = form.Id, 
+                    name = createdFormDto.Name,
+                    description = createdFormDto.Description,
+                    pages = createdFormDto.Pages.Select(page => new
                     {
-                        type = "form",
-                        id = form.Id,
-                        attributes = new
+                        fields = page.Fields.Select(field => new
                         {
-                            form.Name,
-                            form.Description,
-                            Pages = form.Pages.Select(page => new
-                            {
-                                page.Id,
-                                page.FormId,
-                                FormFields = page.FormFields.Select(field => new
-                                {
-                                    field.Id,
-                                    field.Name,
-                                    field.Required,
-                                    field.Attributes,
-                                    field.Kind,
-                                    field.FieldType,
-                                    field.Rules,
-                                    //field.PageId
-                                })
-                            })
-                        }
+                            name = field.Name,
+                            id = field.Id,
+                            required = field.Required,
+                            attributes = field.Attributes,
+                            kind = field.Kind,
+                            fieldType = field.FieldType,
+                            rules = field.Rules
+                        }).ToList()
+                    }).ToList()
+                }
+            },
+                    links = new
+                    {
+                        self = "../dictionary"
                     }
                 };
 
-                return StatusCode(201, response);
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(500, new
-                {
-                    error = "A database error occurred while creating the form.",
-                    details = ex.Message
-                });
+
+                return StatusCode(201, formDto);
             }
             catch (Exception ex)
             {
@@ -179,28 +131,17 @@ namespace FormAPI.Controllers
             }
         }
 
-
-
-     
-
         // GET: forms/{formId}
         [HttpGet("{formId}")]
         public async Task<ActionResult> GetForm(Guid formId)
         {
             try
             {
-                var form = await _context.forms
-                    .Include(f => f.Pages)
-                    .ThenInclude(p => p.FormFields)
-                    .Include(f => f.FormRecords) // Include FormRecords
-                    .FirstOrDefaultAsync(f => f.Id == formId);
+                var form = await _formRepository.GetFormByIdAsync(formId);
 
                 if (form == null)
                 {
-                    return NotFound(new
-                    {
-                        error = "Form not found."
-                    });
+                    return NotFound(new { error = "Form not found." });
                 }
 
                 var formDto = _mapper.Map<FormDto>(form);
@@ -209,54 +150,20 @@ namespace FormAPI.Controllers
                 {
                     data = new
                     {
-                        type = "form",
                         id = formDto.Id,
                         name = formDto.Name,
                         description = formDto.Description,
-                        pages = formDto.Pages.Select(p => new
-                        {
-                            fields = p.Fields.Select(field => new
-                            {
-                                name = field.Name,
-                                id = field.Id,
-                                required = field.Required,
-                                attributes = field.Attributes,
-                                kind = field.Kind,
-                                fieldType = field.FieldType,
-                                rules = field.Rules
-                            }).ToList()
-                        }).ToList(),
-                        formRecords = formDto.FormRecords.Select(record => new
-                        {
-                            id = record.Id,
-                            //formFieldValues = record.FormFieldValues
-                            // Deserialize the FormFieldValues string into a Dictionary
-                            formFieldValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(record.FormFieldValues)
-                        }).ToList()
-                    }
+                        type = formDto.Type, 
+                        pages = formDto.Pages 
+                    },
+                    links = new
+                    {
+                        self = Url.Action("GetForm", new { formId })
+                    },
+                    type = "form" 
                 };
 
-                var jsonResponse = JsonConvert.SerializeObject(response);
-                Console.WriteLine(jsonResponse); // Log the JSON response
-                return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
-                /*
-                var result = new ObjectResult(response)
-                {
-                    StatusCode = 200
-                };
-                result.ContentTypes.Clear();
-                result.ContentTypes.Add("application/vnd+json");
-
-                return result;
-                */
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(500, new
-                {
-                    error = "A database error occurred while retrieving the form.",
-                    details = ex.Message
-                });
+                return Content(JsonConvert.SerializeObject(response), "application/vnd+json");
             }
             catch (Exception ex)
             {
@@ -268,37 +175,22 @@ namespace FormAPI.Controllers
             }
         }
 
-
-
-       
-
-        // DELETE: forms/{formId}
+        // DELETE: api/forms/{formId}
         [HttpDelete("{formId}")]
         public async Task<ActionResult> DeleteForm(Guid formId)
         {
             try
             {
-                var form = await _context.forms.FindAsync(formId);
+                var form = await _formRepository.GetFormByIdAsync(formId);
+
                 if (form == null)
                 {
-                    return NotFound(new
-                    {
-                        error = "Form not found."
-                    });
+                    return NotFound(new { error = "Form not found." });
                 }
 
-                _context.forms.Remove(form);
-                await _context.SaveChangesAsync();
+                await _formRepository.DeleteFormAsync(form);
 
                 return NoContent();
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(500, new
-                {
-                    error = "A database error occurred while deleting the form.",
-                    details = ex.Message
-                });
             }
             catch (Exception ex)
             {
@@ -309,102 +201,34 @@ namespace FormAPI.Controllers
                 });
             }
         }
-
-        
         [HttpPut("{formId}")]
         public async Task<ActionResult> UpdateForm(Guid formId, [FromBody] FormDto formDto)
         {
             try
             {
-
-                // Check if the formDto is null
-                if (formDto == null)
+                /*
+                if (formDto == null || formId != formDto.Id)
                 {
-                    return BadRequest(new
-                    {
-                        error = "The formDto field is required."
-                    });
+                    return BadRequest(new { error = "Invalid form data." });
                 }
+                */
 
-                var existingForm = await _context.forms
-                    .Include(f => f.Pages)
-                    .ThenInclude(p => p.FormFields)
-                    .FirstOrDefaultAsync(f => f.Id == formId);
-
+                // Retrieve the existing form from the repository
+                var existingForm = await _formRepository.GetFormByIdAsync(formId);
                 if (existingForm == null)
                 {
                     return NotFound(new { error = "Form not found." });
                 }
 
-                // Update form properties
+                // Map only the updatable properties from the DTO to the existing form entity
                 existingForm.Name = formDto.Name;
                 existingForm.Description = formDto.Description;
+                existingForm.Pages = _mapper.Map<List<Page>>(formDto.Pages); // Ensure the pages are mapped correctly
 
-                // Update pages and form fields
-                foreach (var pageDto in formDto.Pages)
-                {
-                    var existingPage = existingForm.Pages.FirstOrDefault(p => p.Id == pageDto.Id);
-                    if (existingPage == null)
-                    {
-                        var newPage = _mapper.Map<Page>(pageDto);
-                        existingForm.Pages.Add(newPage);
-                    }
-                    else
-                    {
-                        existingPage.FormFields.Clear();
-                        foreach (var fieldDto in pageDto.Fields)
-                        {
-                            var newField = _mapper.Map<FormField>(fieldDto);
-                            existingPage.FormFields.Add(newField);
-                        }
-                    }
-                }
+                // Update the form using the repository
+                await _formRepository.UpdateFormAsync(existingForm);
 
-                await _context.SaveChangesAsync();
-
-                var response = new
-                {
-                    data = new
-                    {
-                        type = "form",
-                        id = existingForm.Id,
-                        attributes = new
-                        {
-                            existingForm.Name,
-                            existingForm.Description,
-                            Pages = existingForm.Pages.Select(page => new
-                            {
-                                page.Id,
-                                page.FormId,
-                                FormFields = page.FormFields.Select(field => new
-                                {
-                                    field.Id,
-                                    field.Name,
-                                    field.Required,
-                                    field.Attributes,
-                                    field.Kind,
-                                    field.FieldType,
-                                    field.Rules,
-                                    field.PageId
-                                })
-                            })
-                        }
-                    }
-                };
-
-                //return Ok(response);
-
-                var jsonResponse = JsonConvert.SerializeObject(response);
-                Console.WriteLine(jsonResponse); // Log the JSON response
-
-                var result = new ObjectResult(response)
-                {
-                    StatusCode = 200
-                };
-                result.ContentTypes.Clear();
-                result.ContentTypes.Add("application/vnd.api+json");
-
-                return result;
+                return NoContent();
             }
             catch (DbUpdateException ex)
             {
@@ -423,47 +247,32 @@ namespace FormAPI.Controllers
                 });
             }
         }
-        
 
 
-
-        // GET: /forms/fields
+        // GET: forms/fields
         [HttpGet("fields")]
-        public async Task<ActionResult> ListFormFields()
+        public async Task<ActionResult> GetFormFields()
         {
             try
             {
-                var formFields = await _context.formfields.ToListAsync();
-                var formFieldDtos = formFields.Select(ff => _mapper.Map<FormFieldDto>(ff)).ToList();
-
+                var formFields = await _formRepository.GetAllFormFieldsAsync();
                 var response = new
                 {
-                    data = formFieldDtos.Select(ff => new
+                    data = formFields.Select(ff => new
                     {
-                        type = "formfield",
-                        id = ff.Id,
                         name = ff.Name,
+                        id = ff.Id,
                         required = ff.Required,
                         attributes = ff.Attributes,
                         kind = ff.Kind,
                         fieldType = ff.FieldType,
                         rules = ff.Rules
-                    }).ToList(),
-                    links = new
-                    {
-                        self = "../dictionary"
-                    }
+                    }),
+                    type = "formField",
+                    links = new { self = "/form/formFields" }
                 };
 
                 return Content(JsonConvert.SerializeObject(response), "application/vnd.api+json");
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(500, new
-                {
-                    error = "A database error occurred while retrieving form fields.",
-                    details = ex.Message
-                });
             }
             catch (Exception ex)
             {
@@ -474,12 +283,8 @@ namespace FormAPI.Controllers
                 });
             }
         }
-
-      
     }
 }
-
-
 
 
 
